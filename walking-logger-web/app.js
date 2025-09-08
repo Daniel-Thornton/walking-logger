@@ -12,7 +12,7 @@ let syncQueue = [];
 let isOnline = navigator.onLine;
 
 // API Configuration
-const API_BASE_URL = 'https://walking-logger-api.railway.app'; // Will be updated when deployed
+const API_BASE_URL = 'https://walking-logger-production.up.railway.app';
 const LOCAL_STORAGE_KEY = 'walkingLoggerData';
 const AUTH_TOKEN_KEY = 'walkingLoggerToken';
 
@@ -1409,3 +1409,4 @@ function showLoading(show) {
 
 // Load sync queue on startup
 loadSyncQueue();
+
