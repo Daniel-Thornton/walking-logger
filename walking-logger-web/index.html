@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walking Logger</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Walking Logger">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Mobile-friendly header -->
+    <div class="app-header">
+        <div class="header-content">
+            <div class="app-icon">🚶‍♂️</div>
+            <div class="app-title">Walking Logger</div>
+            <div class="user-controls">
+                <button class="btn btn-secondary" id="loginBtn">Login</button>
+                <button class="btn btn-secondary" id="logoutBtn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <img src="images/banner.jpg" alt="Walking Logger" class="banner-image">
+            <p class="subtitle">Track your daily walks across all devices</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="log">Log Walk</button>
+            <button class="tab-btn" data-tab="visualizations">Charts</button>
+            <button class="tab-btn" data-tab="leaderboard">Leaderboard</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Login/Registration Modal -->
+            <div id="authModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="authTitle">Login to Sync Data</h2>
+                        <button class="modal-close" id="closeAuthModal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="authForm">
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" id="password" name="password" required>
+                            </div>
+                            <div class="auth-buttons">
+                                <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Login</button>
+                                <button type="button" class="btn btn-secondary" id="registerBtn">Register</button>
+                            </div>
+                        </form>
+                        <div class="auth-toggle">
+                            <p>Don't have an account? <a href="#" id="showRegister">Register here</a></p>
+                            <p id="showLogin" style="display: none;">Already have an account? <a href="#">Login here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Status -->
+            <div id="syncStatus" class="sync-status">
+                <span id="syncText">Working offline</span>
+                <div id="syncSpinner" class="sync-spinner" style="display: none;"></div>
+            </div>
+
+            <!-- Log Walk Tab -->
+            <div id="logTab" class="tab-content active">
+                <!-- Input Form Section -->
+                <section class="input-section">
+                    <div class="card form-card">
+                        <div class="window-title">Log Today's Walk</div>
+                        <form id="walkForm" class="walk-form">
+                            <div class="form-group">
+                                <label for="date">Date:</label>
+                                <input type="date" id="date" name="date" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="distance">Distance:</label>
+                                <input type="number" id="distance" name="distance" min="0" step="0.01" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="timeElapsed">Time Elapsed (minutes):</label>
+                                <input type="number" id="timeElapsed" name="timeElapsed" min="1" step="0.1" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-text">Log Walk</span>
+                                <span class="btn-icon">🚶‍♂️</span>
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Statistics Section -->
+                <section class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🚶‍♂️</div>
+                            <div class="stat-value" id="totalWalks">0</div>
+                            <div class="stat-label">Total Walks</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">📏</div>
+                            <div class="stat-value" id="totalDistance">0</div>
+                            <div class="stat-label">Total Distance</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-value" id="currentStreak">0</div>
+                            <div class="stat-label">Current Streak</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-value" id="longestStreak">0</div>
+                            <div class="stat-label">Longest Streak</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weekly Comparison Section -->
+                <section class="weekly-comparison-section">
+                    <div class="card">
+                        <div class="window-title">📊 This Week vs Last Week</div>
+                        <div id="weekComparison" class="week-comparison-container"></div>
+                    </div>
+                </section>
+
+                <!-- Recent Walks Section -->
+                <section class="recent-section">
+                    <div class="card">
+                        <div class="window-title">Recent Walks</div>
+                        <div class="section-header">
+                            <button id="exportBtn" class="btn btn-secondary">
+                                <span class="btn-text">Export CSV</span>
+                                <span class="btn-icon">💾</span>
+                            </button>
+                            <button id="importBtn" class="btn btn-secondary">
+                                <span class="btn-text">Import CSV</span>
+                                <span class="btn-icon">📁</span>
+                            </button>
+                        </div>
+                        <div id="recentWalks" class="recent-walks"></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Visualizations Tab -->
+            <div id="visualizationsTab" class="tab-content">
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <div class="charts-grid">
+                        <div class="card chart-card">
+                            <h3>Distance Over Time</h3>
+                            <canvas id="distanceChart"></canvas>
+                        </div>
+                        
+                        <div class="card chart-card">
+                            <h3>Time vs Distance</h3>
+                            <canvas id="timeDistanceChart"></canvas>
+                        </div>
+                        
+                        <div class="card chart-card">
+                            <h3>Moving Averages</h3>
+                            <div class="chart-controls">
+                                <button class="btn btn-secondary chart-toggle active" data-chart="distance">Distance</button>
+                                <button class="btn btn-secondary chart-toggle" data-chart="pace">Pace</button>
+                            </div>
+                            <canvas id="movingAveragesChart"></canvas>
+                        </div>
+                        
+                        <div class="card chart-card">
+                            <h3>Pace Trends</h3>
+                            <canvas id="paceTrendsChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Leaderboard Tab -->
+            <div id="leaderboardTab" class="tab-content">
+                <section class="leaderboard-section">
+                    <div class="card">
+                        <div class="window-title">🏆 Leaderboards</div>
+                        <div class="leaderboard-controls">
+                            <button class="btn btn-secondary leaderboard-toggle active" data-leaderboard="distance">Distance</button>
+                            <button class="btn btn-secondary leaderboard-toggle" data-leaderboard="pace">Best Pace</button>
+                        </div>
+                        <div id="leaderboard" class="leaderboard"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast">
+            <span id="toastMessage"></span>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Hidden file input for CSV import -->
+        <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
