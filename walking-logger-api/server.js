@@ -21,7 +21,7 @@ const pool = new Pool({
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://walking-logger.netlify.app', 'https://walkinglogger.app'] 
+    ? ['https://walking-logger.netlify.app', 'https://walkinglogger.app', 'https://daniel-thornton.github.io'] 
     : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
   credentials: true
 }));
@@ -429,3 +429,4 @@ process.on('SIGINT', async () => {
 });
 
 startServer();
+
