@@ -1,5 +1,7 @@
 # Walking Logger - Web Version
 
+https://daniel-thornton.github.io/walking-logger
+
 A cross-device walking tracker that syncs your data across all your devices. Built as a Progressive Web App (PWA) that works on iPhone, Android, and desktop.
 
 ## Features
