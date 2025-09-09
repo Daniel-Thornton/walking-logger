@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Trust proxy for Railway deployment
-app.set('trust proxy', 1);
+//app.set('trust proxy', 1);
 
 // Database connection
 const pool = new Pool({
@@ -432,6 +432,7 @@ process.on('SIGINT', async () => {
 });
 
 startServer();
+
 
 
 
