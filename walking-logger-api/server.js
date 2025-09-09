@@ -17,7 +17,7 @@ app.set('trust proxy', 1);
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/walking_logger',
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
 });
 
 // Middleware
@@ -432,5 +432,6 @@ process.on('SIGINT', async () => {
 });
 
 startServer();
+
 
 
