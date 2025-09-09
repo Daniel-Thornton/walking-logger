@@ -415,27 +415,32 @@ app.use((req, res) => {
 async function startServer() {
   try {
     await initDatabase();
-    const server = app.listen(PORT, HOST, () => {
-      console.log(`Walking Logger API server listening on http://${HOST}:${PORT}`);
+    
+    app.listen(PORT, () => {
+      console.log(`Walking Logger API server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
-
-    // Graceful shutdown
-    const shutdown = async (sig) => {
-      console.log(`[${sig}] shutting down gracefully`);
-      try { await pool.end(); } catch (e) { console.error('PG close error', e); }
-      server.close(() => process.exit(0));
-      setTimeout(() => process.exit(0), 5000).unref();
-    };
-    process.on('SIGTERM', () => shutdown('SIGTERM'));
-    process.on('SIGINT', () => shutdown('SIGINT'));
   } catch (error) {
     console.error('Failed to start server:', error);
-    // Do not hard-exit here; let the platform restart if needed.
+    process.exit(1);
   }
 }
 
+// Handle graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  await pool.end();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  console.log('SIGINT received, shutting down gracefully');
+  await pool.end();
+  process.exit(0);
+});
+
 startServer();
+
 
 
 
