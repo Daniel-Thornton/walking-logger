@@ -11,7 +11,7 @@ require('dotenv').config();
 const app = express();
 
 // ---- Ports/host for Railway ----
-const PORT = Number(process.env.PORT || 3001);
+const PORT = Number(process.env.PORT || 8080);
 const HOST = '0.0.0.0';
 
 // Trust proxy for Railway deployment
@@ -32,9 +32,11 @@ pool.on('error', (err) => {
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://walking-logger.netlify.app', 'https://walkinglogger.app', 'https://daniel-thornton.github.io'] 
+    ? ['https://walking-logger.netlify.app', 'https://walkinglogger.app', 'https://daniel-thornton.github.io', 'https://walking-logger-production.up.railway.app'] 
     : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json({ limit: '10mb' }));
 
@@ -133,7 +135,18 @@ const handleValidationErrors = (req, res, next) => {
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Keep-alive endpoint for Railway
+app.get('/ping', (req, res) => {
+  res.json({ pong: true, timestamp: new Date().toISOString() });
 });
 
 // User registration
@@ -266,16 +279,23 @@ app.post('/api/walks',
   [
     body('date').isISO8601().toDate(),
     body('distance').isFloat({ min: 0.01 }),
-    body('timeElapsed').isInt({ min: 1 })
+    body('timeElapsed').isNumeric().custom(value => {
+      const num = parseFloat(value);
+      if (num < 1) throw new Error('Time elapsed must be at least 1 minute');
+      return true;
+    })
   ],
   handleValidationErrors,
   async (req, res) => {
     try {
       const { date, distance, timeElapsed } = req.body;
 
+      // Ensure timeElapsed is converted to integer for database
+      const timeElapsedInt = Math.round(parseFloat(timeElapsed));
+
       const result = await pool.query(
         'INSERT INTO walks (user_id, date, distance, time_elapsed) VALUES ($1, $2, $3, $4) RETURNING date, distance, time_elapsed as "timeElapsed", created_at as "createdAt"',
-        [req.user.id, date, distance, timeElapsed]
+        [req.user.id, date, distance, timeElapsedInt]
       );
 
       res.status(201).json({
@@ -299,7 +319,11 @@ app.post('/api/walks/sync',
     body('walks').isArray().withMessage('Walks must be an array'),
     body('walks.*.date').isISO8601().toDate(),
     body('walks.*.distance').isFloat({ min: 0.01 }),
-    body('walks.*.timeElapsed').isInt({ min: 1 })
+    body('walks.*.timeElapsed').isNumeric().custom(value => {
+      const num = parseFloat(value);
+      if (num < 1) throw new Error('Time elapsed must be at least 1 minute');
+      return true;
+    })
   ],
   handleValidationErrors,
   async (req, res) => {
@@ -314,9 +338,12 @@ app.post('/api/walks/sync',
 
       for (const walk of walks) {
         try {
+          // Ensure timeElapsed is converted to integer for database
+          const timeElapsedInt = Math.round(parseFloat(walk.timeElapsed));
+          
           await client.query(
             'INSERT INTO walks (user_id, date, distance, time_elapsed) VALUES ($1, $2, $3, $4)',
-            [req.user.id, walk.date, walk.distance, walk.timeElapsed]
+            [req.user.id, walk.date, walk.distance, timeElapsedInt]
           );
           addedCount++;
         } catch (error) {
@@ -370,6 +397,29 @@ app.delete('/api/walks/:date',
   }
 );
 
+// Delete all walks for a user
+app.delete('/api/walks/all',
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const result = await pool.query(
+        'DELETE FROM walks WHERE user_id = $1 RETURNING COUNT(*)',
+        [req.user.id]
+      );
+
+      const deletedCount = result.rowCount || 0;
+
+      res.json({ 
+        message: `Successfully deleted ${deletedCount} walks`,
+        deletedCount: deletedCount
+      });
+    } catch (error) {
+      console.error('Delete all walks error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+);
+
 // Get user statistics
 app.get('/api/stats', authenticateToken, async (req, res) => {
   try {
@@ -416,10 +466,18 @@ async function startServer() {
   try {
     await initDatabase();
     
-    app.listen(PORT, () => {
-      console.log(`Walking Logger API server running on port ${PORT}`);
+    const server = app.listen(PORT, HOST, () => {
+      console.log(`Walking Logger API server running on ${HOST}:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
+
+    // Handle server errors
+    server.on('error', (error) => {
+      console.error('Server error:', error);
+      process.exit(1);
+    });
+
+    return server;
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
@@ -427,25 +485,74 @@ async function startServer() {
 }
 
 // Handle graceful shutdown
+let server;
+
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully');
-  await pool.end();
-  process.exit(0);
+  
+  if (server) {
+    server.close(async () => {
+      console.log('HTTP server closed');
+      try {
+        await pool.end();
+        console.log('Database pool closed');
+        process.exit(0);
+      } catch (error) {
+        console.error('Error closing database pool:', error);
+        process.exit(1);
+      }
+    });
+  } else {
+    try {
+      await pool.end();
+      process.exit(0);
+    } catch (error) {
+      console.error('Error closing database pool:', error);
+      process.exit(1);
+    }
+  }
 });
 
 process.on('SIGINT', async () => {
   console.log('SIGINT received, shutting down gracefully');
-  await pool.end();
-  process.exit(0);
+  
+  if (server) {
+    server.close(async () => {
+      console.log('HTTP server closed');
+      try {
+        await pool.end();
+        console.log('Database pool closed');
+        process.exit(0);
+      } catch (error) {
+        console.error('Error closing database pool:', error);
+        process.exit(1);
+      }
+    });
+  } else {
+    try {
+      await pool.end();
+      process.exit(0);
+    } catch (error) {
+      console.error('Error closing database pool:', error);
+      process.exit(1);
+    }
+  }
 });
 
-startServer();
+// Keep-alive mechanism for Railway
+function keepAlive() {
+  if (process.env.NODE_ENV === 'production') {
+    setInterval(() => {
+      console.log('Keep-alive ping at', new Date().toISOString());
+    }, 25 * 60 * 1000); // Every 25 minutes
+  }
+}
 
-
-
-
-
-
-
-
-
+// Start the server
+startServer().then((serverInstance) => {
+  server = serverInstance;
+  keepAlive();
+}).catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});
