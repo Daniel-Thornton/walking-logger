@@ -786,19 +786,21 @@ function updateRecentWalks() {
         
         return `
             <div class="walk-item">
-                <div class="walk-date">${formatDate(walk.date)}</div>
-                <div class="walk-stats">
-                    <div class="walk-stat">
-                        <span>📏</span>
-                        <span>${distance.toFixed(2)}</span>
-                    </div>
-                    <div class="walk-stat">
-                        <span>⏱️</span>
-                        <span>${timeElapsed} min</span>
-                    </div>
-                    <div class="walk-stat">
-                        <span>🏃‍♂️</span>
-                        <span>${calculatePace(timeElapsed, distance)} min/dist</span>
+                <div class="walk-content">
+                    <div class="walk-date">${formatDate(walk.date)}</div>
+                    <div class="walk-stats">
+                        <div class="walk-stat">
+                            <span>📏</span>
+                            <span>${distance.toFixed(2)}</span>
+                        </div>
+                        <div class="walk-stat">
+                            <span>⏱️</span>
+                            <span>${timeElapsed} min</span>
+                        </div>
+                        <div class="walk-stat">
+                            <span>🏃‍♂️</span>
+                            <span>${calculatePace(timeElapsed, distance)} min/dist</span>
+                        </div>
                     </div>
                 </div>
                 <button class="delete-walk-btn" onclick="deleteWalk('${walk.date}', ${distance}, ${timeElapsed})" title="Delete this walk">
