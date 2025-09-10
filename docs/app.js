@@ -1359,13 +1359,16 @@ function updateLeaderboard() {
             medal = '🥉';
         }
         
+        const distance = parseFloat(walk.distance) || 0;
+        const timeElapsed = parseFloat(walk.timeElapsed) || 0;
+        
         const displayValue = currentLeaderboardView === 'distance' 
-            ? walk.distance.toFixed(2)
-            : calculatePace(walk.timeElapsed, walk.distance);
+            ? distance.toFixed(2)
+            : calculatePace(timeElapsed, distance);
         
         const detailsText = currentLeaderboardView === 'distance'
-            ? `${walk.timeElapsed} min • ${calculatePace(walk.timeElapsed, walk.distance)} min/dist pace`
-            : `${walk.distance.toFixed(2)} distance • ${walk.timeElapsed} min`;
+            ? `${timeElapsed} min • ${calculatePace(timeElapsed, distance)} min/dist pace`
+            : `${distance.toFixed(2)} distance • ${timeElapsed} min`;
         
         return `
             <div class="leaderboard-item ${rankClass}">
