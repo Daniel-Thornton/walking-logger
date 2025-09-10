@@ -141,6 +141,12 @@ function setupEventListeners() {
     importBtn.addEventListener('click', () => csvFileInput.click());
     csvFileInput.addEventListener('change', handleImport);
     
+    // Delete all walks button
+    const deleteAllBtn = document.getElementById('deleteAllBtn');
+    if (deleteAllBtn) {
+        deleteAllBtn.addEventListener('click', deleteAllWalks);
+    }
+    
     // Authentication event listeners
     loginBtn.addEventListener('click', () => showAuthModal('login'));
     logoutBtn.addEventListener('click', handleLogout);
@@ -775,6 +781,9 @@ function updateRecentWalks() {
                         <span>${calculatePace(timeElapsed, distance)} min/dist</span>
                     </div>
                 </div>
+                <button class="delete-walk-btn" onclick="deleteWalk('${walk.date}', ${distance}, ${timeElapsed})" title="Delete this walk">
+                    🗑️
+                </button>
             </div>
         `;
     }).join('');
@@ -1416,6 +1425,142 @@ function showToast(message, type = 'success') {
 
 function showLoading(show) {
     loadingSpinner.style.display = show ? 'flex' : 'none';
+}
+
+// Delete a specific walk
+async function deleteWalk(date, distance, timeElapsed) {
+    if (!confirm('Are you sure you want to delete this walk?')) {
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        // Delete from local storage first
+        await deleteWalkLocally(date, distance, timeElapsed);
+        
+        // Try to delete from server if authenticated and online
+        if (isAuthenticated && isOnline) {
+            await deleteWalkFromServer(date);
+        } else if (isAuthenticated) {
+            // Queue for later sync (delete operation)
+            syncQueue.push({ action: 'delete', data: { date, distance, timeElapsed } });
+            saveSyncQueue();
+        }
+        
+        showToast('Walk deleted successfully!', 'success');
+        
+        // Reload data and update UI
+        await loadWalkData();
+        
+    } catch (error) {
+        showToast('Error deleting walk: ' + error.message, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Delete walk from local storage
+async function deleteWalkLocally(date, distance, timeElapsed) {
+    const existingData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    const filteredData = existingData.filter(walk => {
+        // Match by date, distance, and timeElapsed to find the exact walk
+        return !(walk.date === date && 
+                Math.abs(parseFloat(walk.distance) - distance) < 0.01 && 
+                Math.abs(parseFloat(walk.timeElapsed) - timeElapsed) < 0.01);
+    });
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredData));
+}
+
+// Delete walk from server
+async function deleteWalkFromServer(date) {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) throw new Error('Not authenticated');
+    
+    showSyncSpinner(true);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/walks/${encodeURIComponent(date)}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete from server');
+        }
+        
+        return await response.json();
+    } finally {
+        showSyncSpinner(false);
+    }
+}
+
+// Delete all walks
+async function deleteAllWalks() {
+    if (!confirm('Are you sure you want to delete ALL walks? This action cannot be undone!')) {
+        return;
+    }
+    
+    if (!confirm('This will permanently delete all your walking data. Are you absolutely sure?')) {
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        // Clear local storage
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        
+        // Clear server data if authenticated and online
+        if (isAuthenticated && isOnline) {
+            await deleteAllWalksFromServer();
+        } else if (isAuthenticated) {
+            // Queue for later sync (delete all operation)
+            syncQueue.push({ action: 'deleteAll', data: {} });
+            saveSyncQueue();
+        }
+        
+        // Clear sync queue as well
+        syncQueue = [];
+        saveSyncQueue();
+        
+        showToast('All walks deleted successfully!', 'success');
+        
+        // Reload data and update UI
+        await loadWalkData();
+        
+    } catch (error) {
+        showToast('Error deleting all walks: ' + error.message, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Delete all walks from server
+async function deleteAllWalksFromServer() {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) throw new Error('Not authenticated');
+    
+    showSyncSpinner(true);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/walks/all`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete all walks from server');
+        }
+        
+        return await response.json();
+    } finally {
+        showSyncSpinner(false);
+    }
 }
 
 // Load sync queue on startup
