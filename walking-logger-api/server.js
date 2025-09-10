@@ -32,9 +32,11 @@ pool.on('error', (err) => {
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://walking-logger.netlify.app', 'https://walkinglogger.app', 'https://daniel-thornton.github.io'] 
+    ? ['https://walking-logger.netlify.app', 'https://walkinglogger.app', 'https://daniel-thornton.github.io', 'https://walking-logger-production.up.railway.app'] 
     : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json({ limit: '10mb' }));
 
@@ -133,7 +135,18 @@ const handleValidationErrors = (req, res, next) => {
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Keep-alive endpoint for Railway
+app.get('/ping', (req, res) => {
+  res.json({ pong: true, timestamp: new Date().toISOString() });
 });
 
 // User registration
@@ -489,9 +502,19 @@ process.on('SIGINT', async () => {
   }
 });
 
+// Keep-alive mechanism for Railway
+function keepAlive() {
+  if (process.env.NODE_ENV === 'production') {
+    setInterval(() => {
+      console.log('Keep-alive ping at', new Date().toISOString());
+    }, 25 * 60 * 1000); // Every 25 minutes
+  }
+}
+
 // Start the server
 startServer().then((serverInstance) => {
   server = serverInstance;
+  keepAlive();
 }).catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
