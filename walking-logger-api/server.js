@@ -11,7 +11,7 @@ require('dotenv').config();
 const app = express();
 
 // ---- Ports/host for Railway ----
-const PORT = Number(process.env.PORT || 3001);
+const PORT = Number(process.env.PORT || 8080);
 const HOST = '0.0.0.0';
 
 // Trust proxy for Railway deployment
@@ -416,10 +416,18 @@ async function startServer() {
   try {
     await initDatabase();
     
-    app.listen(PORT, () => {
-      console.log(`Walking Logger API server running on port ${PORT}`);
+    const server = app.listen(PORT, HOST, () => {
+      console.log(`Walking Logger API server running on ${HOST}:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
+
+    // Handle server errors
+    server.on('error', (error) => {
+      console.error('Server error:', error);
+      process.exit(1);
+    });
+
+    return server;
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
@@ -427,25 +435,64 @@ async function startServer() {
 }
 
 // Handle graceful shutdown
+let server;
+
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully');
-  await pool.end();
-  process.exit(0);
+  
+  if (server) {
+    server.close(async () => {
+      console.log('HTTP server closed');
+      try {
+        await pool.end();
+        console.log('Database pool closed');
+        process.exit(0);
+      } catch (error) {
+        console.error('Error closing database pool:', error);
+        process.exit(1);
+      }
+    });
+  } else {
+    try {
+      await pool.end();
+      process.exit(0);
+    } catch (error) {
+      console.error('Error closing database pool:', error);
+      process.exit(1);
+    }
+  }
 });
 
 process.on('SIGINT', async () => {
   console.log('SIGINT received, shutting down gracefully');
-  await pool.end();
-  process.exit(0);
+  
+  if (server) {
+    server.close(async () => {
+      console.log('HTTP server closed');
+      try {
+        await pool.end();
+        console.log('Database pool closed');
+        process.exit(0);
+      } catch (error) {
+        console.error('Error closing database pool:', error);
+        process.exit(1);
+      }
+    });
+  } else {
+    try {
+      await pool.end();
+      process.exit(0);
+    } catch (error) {
+      console.error('Error closing database pool:', error);
+      process.exit(1);
+    }
+  }
 });
 
-startServer();
-
-
-
-
-
-
-
-
-
+// Start the server
+startServer().then((serverInstance) => {
+  server = serverInstance;
+}).catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});
