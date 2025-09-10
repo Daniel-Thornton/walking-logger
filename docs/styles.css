@@ -663,7 +663,7 @@ body {
 /* Toast Notification */
 .toast {
     position: fixed;
-    top: 80px;
+    top: 50px;
     right: 20px;
     background: #ffff80;
     color: #000;
@@ -798,7 +798,7 @@ body {
     }
     
     .stat-card {
-        padding: 10px;
+        padding: 5px;
         min-height: 80px;
     }
     
@@ -893,7 +893,8 @@ body {
 
 @media (max-width: 480px) {
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
     
     .user-controls {
