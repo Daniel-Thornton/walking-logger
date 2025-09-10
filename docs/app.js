@@ -531,7 +531,10 @@ function loadSyncQueue() {
 // Update statistics (same as original but adapted)
 function updateStatistics() {
     const totalWalks = walkData.length;
-    const totalDistance = walkData.reduce((sum, walk) => sum + walk.distance, 0);
+    const totalDistance = walkData.reduce((sum, walk) => {
+        const distance = parseFloat(walk.distance) || 0;
+        return sum + distance;
+    }, 0);
     
     // Calculate streaks
     const streaks = calculateStreaks();
@@ -541,7 +544,7 @@ function updateStatistics() {
     
     // Animate the numbers
     animateNumber(totalWalksEl, totalWalks);
-    animateNumber(totalDistanceEl, totalDistance.toFixed(2));
+    animateNumber(totalDistanceEl, parseFloat(totalDistance.toFixed(2)));
     
     // Update streak displays if elements exist
     if (currentStreakEl) {
@@ -640,10 +643,10 @@ function calculateWeeklyComparison() {
     });
     
     // Calculate totals
-    const thisWeekDistance = thisWeekWalks.reduce((sum, walk) => sum + walk.distance, 0);
-    const lastWeekDistance = lastWeekWalks.reduce((sum, walk) => sum + walk.distance, 0);
-    const thisWeekTime = thisWeekWalks.reduce((sum, walk) => sum + walk.timeElapsed, 0);
-    const lastWeekTime = lastWeekWalks.reduce((sum, walk) => sum + walk.timeElapsed, 0);
+    const thisWeekDistance = thisWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.distance) || 0), 0);
+    const lastWeekDistance = lastWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.distance) || 0), 0);
+    const thisWeekTime = thisWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.timeElapsed) || 0), 0);
+    const lastWeekTime = lastWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.timeElapsed) || 0), 0);
     const thisWeekPace = thisWeekDistance > 0 ? thisWeekTime / thisWeekDistance : 0;
     const lastWeekPace = lastWeekDistance > 0 ? lastWeekTime / lastWeekDistance : 0;
     
@@ -751,25 +754,30 @@ function updateRecentWalks() {
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 10);
     
-    recentWalksEl.innerHTML = recentWalks.map(walk => `
-        <div class="walk-item">
-            <div class="walk-date">${formatDate(walk.date)}</div>
-            <div class="walk-stats">
-                <div class="walk-stat">
-                    <span>📏</span>
-                    <span>${walk.distance.toFixed(2)}</span>
-                </div>
-                <div class="walk-stat">
-                    <span>⏱️</span>
-                    <span>${walk.timeElapsed} min</span>
-                </div>
-                <div class="walk-stat">
-                    <span>🏃‍♂️</span>
-                    <span>${calculatePace(walk.timeElapsed, walk.distance)} min/dist</span>
+    recentWalksEl.innerHTML = recentWalks.map(walk => {
+        const distance = parseFloat(walk.distance) || 0;
+        const timeElapsed = parseFloat(walk.timeElapsed) || 0;
+        
+        return `
+            <div class="walk-item">
+                <div class="walk-date">${formatDate(walk.date)}</div>
+                <div class="walk-stats">
+                    <div class="walk-stat">
+                        <span>📏</span>
+                        <span>${distance.toFixed(2)}</span>
+                    </div>
+                    <div class="walk-stat">
+                        <span>⏱️</span>
+                        <span>${timeElapsed} min</span>
+                    </div>
+                    <div class="walk-stat">
+                        <span>🏃‍♂️</span>
+                        <span>${calculatePace(timeElapsed, distance)} min/dist</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Initialize charts (adapted from original)
