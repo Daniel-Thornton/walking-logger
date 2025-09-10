@@ -397,6 +397,29 @@ app.delete('/api/walks/:date',
   }
 );
 
+// Delete all walks for a user
+app.delete('/api/walks/all',
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const result = await pool.query(
+        'DELETE FROM walks WHERE user_id = $1 RETURNING COUNT(*)',
+        [req.user.id]
+      );
+
+      const deletedCount = result.rowCount || 0;
+
+      res.json({ 
+        message: `Successfully deleted ${deletedCount} walks`,
+        deletedCount: deletedCount
+      });
+    } catch (error) {
+      console.error('Delete all walks error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+);
+
 // Get user statistics
 app.get('/api/stats', authenticateToken, async (req, res) => {
   try {
