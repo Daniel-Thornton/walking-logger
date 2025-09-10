@@ -572,7 +572,7 @@ function updateStatistics() {
     updateWeeklyComparison(weeklyComparison);
 }
 
-// Calculate current and longest streaks (same as original)
+// Calculate current and longest streaks (fixed timezone issues)
 function calculateStreaks() {
     if (walkData.length === 0) {
         return { current: 0, longest: 0 };
@@ -585,9 +585,17 @@ function calculateStreaks() {
     let longestStreak = 0;
     let tempStreak = 0;
     
+    // Use local timezone for today's date to match what user sees
     const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
-    const yesterdayStr = new Date(today.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const todayStr = today.getFullYear() + '-' + 
+                    String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(today.getDate()).padStart(2, '0');
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.getFullYear() + '-' + 
+                        String(yesterday.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(yesterday.getDate()).padStart(2, '0');
     
     // Check if we have a walk today or yesterday to start current streak
     const hasWalkToday = uniqueDates.includes(todayStr);
@@ -597,13 +605,16 @@ function calculateStreaks() {
         currentStreak = 0;
     } else {
         // Calculate current streak by going backwards from today
-        let checkDate = hasWalkToday ? new Date(today) : new Date(today.getTime() - 24 * 60 * 60 * 1000);
+        let checkDate = hasWalkToday ? new Date(today) : new Date(yesterday);
         
         while (true) {
-            const checkDateStr = checkDate.toISOString().split('T')[0];
+            const checkDateStr = checkDate.getFullYear() + '-' + 
+                                String(checkDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(checkDate.getDate()).padStart(2, '0');
+            
             if (uniqueDates.includes(checkDateStr)) {
                 currentStreak++;
-                checkDate = new Date(checkDate.getTime() - 24 * 60 * 60 * 1000);
+                checkDate.setDate(checkDate.getDate() - 1);
             } else {
                 break;
             }
@@ -615,9 +626,9 @@ function calculateStreaks() {
         if (i === 0) {
             tempStreak = 1;
         } else {
-            const prevDate = new Date(uniqueDates[i - 1]);
-            const currDate = new Date(uniqueDates[i]);
-            const dayDiff = (currDate - prevDate) / (1000 * 60 * 60 * 24);
+            const prevDate = new Date(uniqueDates[i - 1] + 'T00:00:00');
+            const currDate = new Date(uniqueDates[i] + 'T00:00:00');
+            const dayDiff = Math.round((currDate - prevDate) / (1000 * 60 * 60 * 24));
             
             if (dayDiff === 1) {
                 tempStreak++;
