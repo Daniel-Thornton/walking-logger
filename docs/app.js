@@ -141,6 +141,12 @@ function setupEventListeners() {
     importBtn.addEventListener('click', () => csvFileInput.click());
     csvFileInput.addEventListener('change', handleImport);
     
+    // Delete all walks button
+    const deleteAllBtn = document.getElementById('deleteAllBtn');
+    if (deleteAllBtn) {
+        deleteAllBtn.addEventListener('click', deleteAllWalks);
+    }
+    
     // Authentication event listeners
     loginBtn.addEventListener('click', () => showAuthModal('login'));
     logoutBtn.addEventListener('click', handleLogout);
@@ -452,10 +458,18 @@ async function loadWalkDataFromServer() {
         
         const data = await response.json();
         
-        // Update local storage with server data
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+        // Ensure data types are correct for frontend processing
+        const processedData = data.map(walk => ({
+            ...walk,
+            distance: parseFloat(walk.distance) || 0,
+            timeElapsed: parseFloat(walk.timeElapsed) || 0,
+            date: walk.date // Keep date as string
+        }));
         
-        return data;
+        // Update local storage with processed data
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(processedData));
+        
+        return processedData;
     } finally {
         showSyncSpinner(false);
     }
@@ -531,7 +545,10 @@ function loadSyncQueue() {
 // Update statistics (same as original but adapted)
 function updateStatistics() {
     const totalWalks = walkData.length;
-    const totalDistance = walkData.reduce((sum, walk) => sum + walk.distance, 0);
+    const totalDistance = walkData.reduce((sum, walk) => {
+        const distance = parseFloat(walk.distance) || 0;
+        return sum + distance;
+    }, 0);
     
     // Calculate streaks
     const streaks = calculateStreaks();
@@ -541,7 +558,7 @@ function updateStatistics() {
     
     // Animate the numbers
     animateNumber(totalWalksEl, totalWalks);
-    animateNumber(totalDistanceEl, totalDistance.toFixed(2));
+    animateNumber(totalDistanceEl, parseFloat(totalDistance.toFixed(2)));
     
     // Update streak displays if elements exist
     if (currentStreakEl) {
@@ -640,10 +657,10 @@ function calculateWeeklyComparison() {
     });
     
     // Calculate totals
-    const thisWeekDistance = thisWeekWalks.reduce((sum, walk) => sum + walk.distance, 0);
-    const lastWeekDistance = lastWeekWalks.reduce((sum, walk) => sum + walk.distance, 0);
-    const thisWeekTime = thisWeekWalks.reduce((sum, walk) => sum + walk.timeElapsed, 0);
-    const lastWeekTime = lastWeekWalks.reduce((sum, walk) => sum + walk.timeElapsed, 0);
+    const thisWeekDistance = thisWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.distance) || 0), 0);
+    const lastWeekDistance = lastWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.distance) || 0), 0);
+    const thisWeekTime = thisWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.timeElapsed) || 0), 0);
+    const lastWeekTime = lastWeekWalks.reduce((sum, walk) => sum + (parseFloat(walk.timeElapsed) || 0), 0);
     const thisWeekPace = thisWeekDistance > 0 ? thisWeekTime / thisWeekDistance : 0;
     const lastWeekPace = lastWeekDistance > 0 ? lastWeekTime / lastWeekDistance : 0;
     
@@ -751,25 +768,33 @@ function updateRecentWalks() {
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 10);
     
-    recentWalksEl.innerHTML = recentWalks.map(walk => `
-        <div class="walk-item">
-            <div class="walk-date">${formatDate(walk.date)}</div>
-            <div class="walk-stats">
-                <div class="walk-stat">
-                    <span>📏</span>
-                    <span>${walk.distance.toFixed(2)}</span>
+    recentWalksEl.innerHTML = recentWalks.map(walk => {
+        const distance = parseFloat(walk.distance) || 0;
+        const timeElapsed = parseFloat(walk.timeElapsed) || 0;
+        
+        return `
+            <div class="walk-item">
+                <div class="walk-date">${formatDate(walk.date)}</div>
+                <div class="walk-stats">
+                    <div class="walk-stat">
+                        <span>📏</span>
+                        <span>${distance.toFixed(2)}</span>
+                    </div>
+                    <div class="walk-stat">
+                        <span>⏱️</span>
+                        <span>${timeElapsed} min</span>
+                    </div>
+                    <div class="walk-stat">
+                        <span>🏃‍♂️</span>
+                        <span>${calculatePace(timeElapsed, distance)} min/dist</span>
+                    </div>
                 </div>
-                <div class="walk-stat">
-                    <span>⏱️</span>
-                    <span>${walk.timeElapsed} min</span>
-                </div>
-                <div class="walk-stat">
-                    <span>🏃‍♂️</span>
-                    <span>${calculatePace(walk.timeElapsed, walk.distance)} min/dist</span>
-                </div>
+                <button class="delete-walk-btn" onclick="deleteWalk('${walk.date}', ${distance}, ${timeElapsed})" title="Delete this walk">
+                    🗑️
+                </button>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Initialize charts (adapted from original)
@@ -1351,13 +1376,16 @@ function updateLeaderboard() {
             medal = '🥉';
         }
         
+        const distance = parseFloat(walk.distance) || 0;
+        const timeElapsed = parseFloat(walk.timeElapsed) || 0;
+        
         const displayValue = currentLeaderboardView === 'distance' 
-            ? walk.distance.toFixed(2)
-            : calculatePace(walk.timeElapsed, walk.distance);
+            ? distance.toFixed(2)
+            : calculatePace(timeElapsed, distance);
         
         const detailsText = currentLeaderboardView === 'distance'
-            ? `${walk.timeElapsed} min • ${calculatePace(walk.timeElapsed, walk.distance)} min/dist pace`
-            : `${walk.distance.toFixed(2)} distance • ${walk.timeElapsed} min`;
+            ? `${timeElapsed} min • ${calculatePace(timeElapsed, distance)} min/dist pace`
+            : `${distance.toFixed(2)} distance • ${timeElapsed} min`;
         
         return `
             <div class="leaderboard-item ${rankClass}">
@@ -1405,6 +1433,142 @@ function showToast(message, type = 'success') {
 
 function showLoading(show) {
     loadingSpinner.style.display = show ? 'flex' : 'none';
+}
+
+// Delete a specific walk
+async function deleteWalk(date, distance, timeElapsed) {
+    if (!confirm('Are you sure you want to delete this walk?')) {
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        // Delete from local storage first
+        await deleteWalkLocally(date, distance, timeElapsed);
+        
+        // Try to delete from server if authenticated and online
+        if (isAuthenticated && isOnline) {
+            await deleteWalkFromServer(date);
+        } else if (isAuthenticated) {
+            // Queue for later sync (delete operation)
+            syncQueue.push({ action: 'delete', data: { date, distance, timeElapsed } });
+            saveSyncQueue();
+        }
+        
+        showToast('Walk deleted successfully!', 'success');
+        
+        // Reload data and update UI
+        await loadWalkData();
+        
+    } catch (error) {
+        showToast('Error deleting walk: ' + error.message, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Delete walk from local storage
+async function deleteWalkLocally(date, distance, timeElapsed) {
+    const existingData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    const filteredData = existingData.filter(walk => {
+        // Match by date, distance, and timeElapsed to find the exact walk
+        return !(walk.date === date && 
+                Math.abs(parseFloat(walk.distance) - distance) < 0.01 && 
+                Math.abs(parseFloat(walk.timeElapsed) - timeElapsed) < 0.01);
+    });
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredData));
+}
+
+// Delete walk from server
+async function deleteWalkFromServer(date) {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) throw new Error('Not authenticated');
+    
+    showSyncSpinner(true);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/walks/${encodeURIComponent(date)}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete from server');
+        }
+        
+        return await response.json();
+    } finally {
+        showSyncSpinner(false);
+    }
+}
+
+// Delete all walks
+async function deleteAllWalks() {
+    if (!confirm('Are you sure you want to delete ALL walks? This action cannot be undone!')) {
+        return;
+    }
+    
+    if (!confirm('This will permanently delete all your walking data. Are you absolutely sure?')) {
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        // Clear local storage
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        
+        // Clear server data if authenticated and online
+        if (isAuthenticated && isOnline) {
+            await deleteAllWalksFromServer();
+        } else if (isAuthenticated) {
+            // Queue for later sync (delete all operation)
+            syncQueue.push({ action: 'deleteAll', data: {} });
+            saveSyncQueue();
+        }
+        
+        // Clear sync queue as well
+        syncQueue = [];
+        saveSyncQueue();
+        
+        showToast('All walks deleted successfully!', 'success');
+        
+        // Reload data and update UI
+        await loadWalkData();
+        
+    } catch (error) {
+        showToast('Error deleting all walks: ' + error.message, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Delete all walks from server
+async function deleteAllWalksFromServer() {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) throw new Error('Not authenticated');
+    
+    showSyncSpinner(true);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/walks/all`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete all walks from server');
+        }
+        
+        return await response.json();
+    } finally {
+        showSyncSpinner(false);
+    }
 }
 
 // Load sync queue on startup
