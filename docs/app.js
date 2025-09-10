@@ -463,7 +463,7 @@ async function loadWalkDataFromServer() {
             ...walk,
             distance: parseFloat(walk.distance) || 0,
             timeElapsed: parseFloat(walk.timeElapsed) || 0,
-            date: walk.date // Keep date as string
+            date: walk.date.split('T')[0] // Normalize date to YYYY-MM-DD format
         }));
         
         // Update local storage with processed data
