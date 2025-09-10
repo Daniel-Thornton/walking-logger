@@ -70,10 +70,10 @@ body {
     max-width: 100%;
     height: auto;
     max-height: 200px;
-    margin-bottom: 10px;
-    border: 1px inset #c0c0c0;
+    margin-bottom: 0px;
+    border: 0px inset #c0c0c0;
     background: #fff;
-    padding: 5px;
+    padding: 0px;
 }
 
 .subtitle {

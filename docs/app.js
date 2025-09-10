@@ -282,7 +282,8 @@ function updateSyncStatus() {
         syncText.textContent = 'Working offline - will sync when online';
         syncStatus.className = 'sync-status';
     } else {
-        syncText.textContent = 'Synced across all devices';
+        const userEmail = currentUser && currentUser.email ? currentUser.email : 'user';
+        syncText.textContent = `Synced across all devices (${userEmail})`;
         syncStatus.className = 'sync-status online';
     }
 }
