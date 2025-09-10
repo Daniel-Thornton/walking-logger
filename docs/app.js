@@ -458,10 +458,18 @@ async function loadWalkDataFromServer() {
         
         const data = await response.json();
         
-        // Update local storage with server data
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+        // Ensure data types are correct for frontend processing
+        const processedData = data.map(walk => ({
+            ...walk,
+            distance: parseFloat(walk.distance) || 0,
+            timeElapsed: parseFloat(walk.timeElapsed) || 0,
+            date: walk.date // Keep date as string
+        }));
         
-        return data;
+        // Update local storage with processed data
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(processedData));
+        
+        return processedData;
     } finally {
         showSyncSpinner(false);
     }
