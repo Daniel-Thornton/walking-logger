@@ -279,16 +279,23 @@ app.post('/api/walks',
   [
     body('date').isISO8601().toDate(),
     body('distance').isFloat({ min: 0.01 }),
-    body('timeElapsed').isInt({ min: 1 })
+    body('timeElapsed').isNumeric().custom(value => {
+      const num = parseFloat(value);
+      if (num < 1) throw new Error('Time elapsed must be at least 1 minute');
+      return true;
+    })
   ],
   handleValidationErrors,
   async (req, res) => {
     try {
       const { date, distance, timeElapsed } = req.body;
 
+      // Ensure timeElapsed is converted to integer for database
+      const timeElapsedInt = Math.round(parseFloat(timeElapsed));
+
       const result = await pool.query(
         'INSERT INTO walks (user_id, date, distance, time_elapsed) VALUES ($1, $2, $3, $4) RETURNING date, distance, time_elapsed as "timeElapsed", created_at as "createdAt"',
-        [req.user.id, date, distance, timeElapsed]
+        [req.user.id, date, distance, timeElapsedInt]
       );
 
       res.status(201).json({
@@ -312,7 +319,11 @@ app.post('/api/walks/sync',
     body('walks').isArray().withMessage('Walks must be an array'),
     body('walks.*.date').isISO8601().toDate(),
     body('walks.*.distance').isFloat({ min: 0.01 }),
-    body('walks.*.timeElapsed').isInt({ min: 1 })
+    body('walks.*.timeElapsed').isNumeric().custom(value => {
+      const num = parseFloat(value);
+      if (num < 1) throw new Error('Time elapsed must be at least 1 minute');
+      return true;
+    })
   ],
   handleValidationErrors,
   async (req, res) => {
@@ -327,9 +338,12 @@ app.post('/api/walks/sync',
 
       for (const walk of walks) {
         try {
+          // Ensure timeElapsed is converted to integer for database
+          const timeElapsedInt = Math.round(parseFloat(walk.timeElapsed));
+          
           await client.query(
             'INSERT INTO walks (user_id, date, distance, time_elapsed) VALUES ($1, $2, $3, $4)',
-            [req.user.id, walk.date, walk.distance, walk.timeElapsed]
+            [req.user.id, walk.date, walk.distance, timeElapsedInt]
           );
           addedCount++;
         } catch (error) {
