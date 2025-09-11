@@ -1451,7 +1451,8 @@ function showLoading(show) {
 
 // Delete a specific walk
 async function deleteWalk(date, distance, timeElapsed) {
-    if (!confirm('Are you sure you want to delete this walk?')) {
+    const confirmed = await showConfirmDialog('Delete Walk', 'Are you sure you want to delete this walk?');
+    if (!confirmed) {
         return;
     }
     
@@ -1521,11 +1522,13 @@ async function deleteWalkFromServer(date) {
 
 // Delete all walks
 async function deleteAllWalks() {
-    if (!confirm('Are you sure you want to delete ALL walks? This action cannot be undone!')) {
+    const firstConfirm = await showConfirmDialog('Delete All Walks', 'Are you sure you want to delete ALL walks? This action cannot be undone!');
+    if (!firstConfirm) {
         return;
     }
     
-    if (!confirm('This will permanently delete all your walking data. Are you absolutely sure?')) {
+    const secondConfirm = await showConfirmDialog('Final Confirmation', 'This will permanently delete all your walking data. Are you absolutely sure?');
+    if (!secondConfirm) {
         return;
     }
     
@@ -1587,3 +1590,65 @@ async function deleteAllWalksFromServer() {
 
 // Load sync queue on startup
 loadSyncQueue();
+
+// Custom Windows 98 style confirmation dialog
+let confirmResolve = null;
+
+function showConfirmDialog(title, message) {
+    return new Promise((resolve) => {
+        confirmResolve = resolve;
+        
+        // Set dialog content
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        
+        // Show dialog
+        document.getElementById('confirmOverlay').style.display = 'block';
+    });
+}
+
+function hideConfirmDialog() {
+    document.getElementById('confirmOverlay').style.display = 'none';
+    confirmResolve = null;
+}
+
+// Set up confirmation dialog event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const confirmYes = document.getElementById('confirmYes');
+    const confirmNo = document.getElementById('confirmNo');
+    const confirmOverlay = document.getElementById('confirmOverlay');
+    
+    confirmYes.addEventListener('click', () => {
+        if (confirmResolve) {
+            confirmResolve(true);
+        }
+        hideConfirmDialog();
+    });
+    
+    confirmNo.addEventListener('click', () => {
+        if (confirmResolve) {
+            confirmResolve(false);
+        }
+        hideConfirmDialog();
+    });
+    
+    // Close dialog when clicking overlay
+    confirmOverlay.addEventListener('click', (e) => {
+        if (e.target === confirmOverlay) {
+            if (confirmResolve) {
+                confirmResolve(false);
+            }
+            hideConfirmDialog();
+        }
+    });
+    
+    // Handle escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && confirmOverlay.style.display === 'block') {
+            if (confirmResolve) {
+                confirmResolve(false);
+            }
+            hideConfirmDialog();
+        }
+    });
+});
