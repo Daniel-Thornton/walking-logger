@@ -402,7 +402,7 @@ body {
 
 .delete-all-container {
   display: flex;
-  align-items: flex-start;           /* align bubble + clippy top */
+  align-items: flex-end;           /* align bubble + clippy top */
   justify-content: space-between;    /* push them apart */
   gap: 1rem;                         /* space between bubble & clippy */
   margin-top: 1rem;
@@ -1201,3 +1201,4 @@ body {
         border-width: 3px;
     }
 }
+
