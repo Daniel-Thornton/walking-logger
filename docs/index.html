@@ -20,7 +20,7 @@
             <div class="app-icon">🚶‍♂️</div>
             <div class="app-title">Walking Logger</div>
             <div class="user-controls">
-                <button class="btn btn-secondary" id="loginBtn">Login</button>
+                <button class="btn btn-secondary" id="loginBtn">👤 Login</button>
                 <button class="btn btn-secondary" id="logoutBtn" style="display: none;">Logout</button>
             </div>
         </div>
@@ -28,7 +28,16 @@
 
     <div class="container">
         <header class="header">
-            <img src="images/banner.gif" alt="Walking Logger" class="banner-image">
+            <div class="banner-container">
+                <img src="images/banner.bmp" alt="Walking Logger" class="banner-image">
+                <div class="streak-counter">
+                    <div class="streak-icon">🔥</div>
+                    <div class="streak-info">
+                        <div class="streak-value" id="bannerCurrentStreak">0</div>
+                        <div class="streak-label">Day Streak</div>
+                    </div>
+                </div>
+            </div>
             <!--<p class="subtitle">Track your daily walks across all devices</p>-->
         </header>
 
@@ -116,7 +125,7 @@
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon">📏</div>
+                            <div class="stat-icon">🏁</div>
                             <div class="stat-value" id="totalDistance">0</div>
                             <div class="stat-label">Total Distance</div>
                         </div>
@@ -136,12 +145,12 @@
                 </section>
 
                 <!-- Weekly Comparison Section -->
-                <section class="weekly-comparison-section">
+                <!--<section class="weekly-comparison-section">
                     <div class="card">
                         <div class="window-title">📊 This Week vs Last Week</div>
                         <div id="weekComparison" class="week-comparison-container"></div>
                     </div>
-                </section>
+                </section> -->
 
                 <!-- Recent Walks Section -->
                 <section class="recent-section">

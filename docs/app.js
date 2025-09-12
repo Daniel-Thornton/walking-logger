@@ -28,6 +28,9 @@ const toast = document.getElementById('toast');
 const toastMessage = document.getElementById('toastMessage');
 const loadingSpinner = document.getElementById('loadingSpinner');
 
+// Banner streak counter element
+const bannerCurrentStreakEl = document.getElementById('bannerCurrentStreak');
+
 // Authentication elements
 const authModal = document.getElementById('authModal');
 const authForm = document.getElementById('authForm');
@@ -567,6 +570,11 @@ function updateStatistics() {
     }
     if (longestStreakEl) {
         animateNumber(longestStreakEl, streaks.longest);
+    }
+    
+    // Update banner streak counter if element exists
+    if (bannerCurrentStreakEl) {
+        animateNumber(bannerCurrentStreakEl, streaks.current);
     }
     
     // Update weekly comparison if elements exist
