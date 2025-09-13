@@ -968,7 +968,7 @@ body {
     font-family: 'MS Sans Serif', sans-serif;
     font-size: 12px;
     font-weight: bold;
-    margin: -15px -15px 15px -15px;
+    margin: -15px -12px 15px -12px;
     border-bottom: 1px solid #000;
 }
 
@@ -1201,3 +1201,4 @@ body {
         border-width: 3px;
     }
 }
+
