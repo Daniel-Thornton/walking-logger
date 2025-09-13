@@ -76,9 +76,45 @@ const helpDialog = document.querySelector('.help-dialog');
 // --- Dialog Tree Engine ---
 (() => {
   const dialogEl = document.querySelector('.help-dialog');
-  const btnA   = document.getElementById('btn-bubble-A');
-  const btnB   = document.getElementById('btn-bubble-B');
-  const btnC    = document.getElementById('btn-bubble-C');
+  const btnA     = document.getElementById('btn-bubble-A');
+  const btnB     = document.getElementById('btn-bubble-B');
+  const btnC     = document.getElementById('btn-bubble-C');
+  const inpt     = document.getElementById('help-txt');
+  const inptCont = document.querySelector('.textInputCont');
+
+  const answers = {};
+
+function setInput(cfg) {
+  // Hide by default
+  if (!cfg || cfg.hide) {
+    inptCont.setAttribute('hidden', '');
+    inpt.disabled = true;
+    inpt.placeholder = '';
+    inpt.value = '';
+    inpt.onkeydown = null;
+    return;
+  }
+
+  // Show + configure
+  inptCont.removeAttribute('hidden');
+  inpt.disabled = !!cfg.disabled;
+  inpt.placeholder = cfg.placeholder || '';
+  inpt.value = cfg.value || '';
+
+  const next = cfg.next || currentNode;
+  const saveKey = cfg.valueKey;  // e.g. "issueDesc"
+
+  const submit = () => {
+    // Optional validation hook
+    if (typeof cfg.validate === 'function' && !cfg.validate(inpt.value)) {
+      if (typeof cfg.onInvalid === 'function') cfg.onInvalid(inpt, dialogEl);
+      return;
+    }
+    if (saveKey) answers[saveKey] = inpt.value;
+    go(next);
+  };
+
+}
 
   // Utility to set a button from config
   function setBtn(el, cfg, fallbackText) {
@@ -137,7 +173,7 @@ const helpDialog = document.querySelector('.help-dialog');
       html: `
         ⚠️<strong>No Problem!</strong>
         <br>
-        Let's start from the top🙂👍
+        Let's start from the top.
       `,
       A : { text: "Ok", next: "Q01" },
       B : { hide: true },
@@ -190,11 +226,24 @@ const helpDialog = document.querySelector('.help-dialog');
     },
     Q03: {
       html: `
-        <strong>Ah!</strong> So your logs are not appearing after you click to submit?
+        💡 <strong>Ah!</strong> 
         <br>
+        So your logs are not appearing after you click to submit?
       `,
-      A : { text: "Yes", next: "loopBack" },
+      A : { text: "Yes", next: "Q11" },
       B : { hide: true },
+      C : { text: "No", next: "loopBack" }
+    },
+    Q04: {
+      html: `
+        ☑️<strong>Alright!</strong> Is it:
+        <ul>
+            <li><strong>A.</strong> An issue with this app? </li>
+            <li><strong>B.</strong> A problem in your personal life? </li>
+        </ul>
+      `,
+      A : { text: "A.", next: "Q09" },
+      B : { text: "B.", next: "Q10" },
       C : { text: "Back", next: "loopBack" }
     },
     Q05: {
@@ -233,7 +282,7 @@ const helpDialog = document.querySelector('.help-dialog');
       html: `
         <strong>Perfect.</strong>
         <br>
-        You could try  just logging it again...
+        You could try just logging it again...
         <br>
         Or I can try to recover your missing data?
       `,
@@ -271,7 +320,83 @@ const helpDialog = document.querySelector('.help-dialog');
       B : { hide: true },
       C : { text: "Back", next: "loopBack" }
     },
-
+    Q09: {
+      html: `
+        📝<strong> Oh no!</strong> 
+        <br>
+        Please fill out the toext box with your current problem.
+        <br>
+      `,
+      input: {
+        placeholder: "...",
+        valueKey: "appIssue",
+        next: "submit",
+        submitButton: "A",         // wire the A button to submit()
+        submitLabel: "Submit"
+    },
+      A : { text: "Submit", next: "submit" },
+      B : { hide: true },
+      C : { text: "Cancel", next: "loopBack" }
+    },
+    Q10: {
+      html: `
+        ⚠️<strong> Well...</strong> Unfortunately I'm not a therapist so I can't help you with that.
+        <br>
+        Would you like to tell me anyway? A real person might read it and be able to help.
+      `,
+      input: {
+        placeholder: "...",
+        valueKey: "myIssue",
+        next: "submit",
+        submitButton: "A",         // wire the A button to submit()
+        submitLabel: "Submit"
+    },
+      A : { text: "Submit", next: "submit" },
+      B : { hide: true },
+      C : { text: "Back", next: "loopBack" }
+    },
+    Q11: {
+        html:`
+        ☑️<strong> No problem!</strong> Let's first analyse the database and see if there are any corrupted files.
+        <br>
+        We shall take a look into your walks database, then if everything is correct, we shall anaylse your account.
+      `,
+      A : { text: "Let's do it", next: "analyse" },
+      B : { hide: true },
+      C : { text: "Cancel", next: "loopBack" }
+    },
+    submit: {
+        html:`
+        ☑️<strong> Submitted!</strong> Thank you!
+        <br>
+        We shall take a look into your issue within the next 2-20 working days.
+      `,
+      A : { text: "Back to start", next: "start" },
+      B : { hide: true },
+      C : { hide: true },
+    },
+    analyse: {
+      onEnter() {
+        // Dramatic, pointless progress sequence
+        fakeProgress(
+          [
+            "-------------------------------------------<br>Analysing database…",
+            "Analysing most recent walks…",
+            "Success, no issues found.<br>-------------------------------------------",
+            "Searching for corrupted files…",
+            "Found currupted walk logs.",
+            "Attempting recover…",
+            "…",
+            "…",
+          ],
+          "success"
+        );
+      },
+      // Buttons hidden during fake progress
+      A : { hide: true },
+      B : { hide: true },
+      C : { hide: true }
+    },
     recover: {
       onEnter() {
         // Dramatic, pointless progress sequence
@@ -293,36 +418,51 @@ const helpDialog = document.querySelector('.help-dialog');
     },
     failed: {
       html: `
-        ⚠️<strong>FAILED</strong>
+        ⚠️<strong> FAILED</strong>
         <br>
         Unfortunately the recover failed.
         <br>
-        <strong>Whomp whomp.</strong>
+        
+      `,
+      A : { hide: true },
+      B : { hide: true },
+      C : { text: "Back to start", next: "start" }
+    },
+    success: {
+      html: `
+        🎉<strong> SUCCESS</strong>
+        <br>
+        Great! Your issue should now be corrected within the next 2 working days.
+        <br>
       `,
       A : { hide: true },
       B : { hide: true },
       C : { text: "Back to start", next: "start" }
     },
   };
+  
 
   let currentNode = 'start';
 
   function render(node) {
     const n = DIALOG[node];
     if (!n) {
-      console.warn(`Missing dialog node: ${node}`);
-      return;
+        console.warn(`Missing dialog node: ${node}`);
+        return;
     }
     currentNode = node;
-    // Use innerHTML so we can include lists/markup (static strings only).
     dialogEl.innerHTML = n.html || "";
 
+    // Buttons first (may be overridden by input submit binding)
     setBtn(btnA, n.A, 'OK');
     setBtn(btnB, n.B, 'Maybe');
-    setBtn(btnC,  n.C,  'Cancel');
+    setBtn(btnC, n.C, 'Cancel');
+
+    // New: configure input visibility/behavior
+    setInput(n.input);
 
     if (typeof n.onEnter === 'function') n.onEnter();
-  }
+    }
 
   function go(node) {
     render(node);

@@ -404,6 +404,15 @@ ul {
     font-size: 14px;
 }
 
+.textInputCont {
+    display: flex;
+    width: 100%;
+}
+
+.help-txt {
+    width: 100%;
+}
+
 .bubble-btn-container {
     display: flex;
     align-items: start;
