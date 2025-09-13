@@ -284,7 +284,7 @@ body {
 .tab-content {
     display: none;
     background: #c0c0c0;
-    border: 2px inset #c0c0c0;
+    /*border: 2px outset #c0c0c0;*/
     padding: 15px;
     min-height: 400px;
 }
@@ -296,7 +296,7 @@ body {
 /* Windows 95 Panel/Card Styles */
 .card {
     background: #c0c0c0;
-    border: 2px inset #c0c0c0;
+    border: 2px outset #c0c0c0;
     padding: 15px;
     margin-bottom: 15px;
 }
