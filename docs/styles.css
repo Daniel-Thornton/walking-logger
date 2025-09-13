@@ -13,6 +13,10 @@ body {
     overflow-x: hidden;
 }
 
+ul {
+    margin: 15px;
+}
+
 /* Mobile-friendly app header */
 .app-header {
     background: linear-gradient(90deg, #0000ff 0%, #000080 100%);
@@ -358,7 +362,7 @@ body {
     font-family: 'MS Sans Serif', sans-serif;
     font-size: 12px;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 6px;
     min-width: 100px;
@@ -398,6 +402,28 @@ body {
 
 .btn-icon {
     font-size: 14px;
+}
+
+.bubble-btn-container {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem; 
+}
+
+.btn-bubble {
+    font-size: 14px;
+    border-radius: 6px;
+    background: #fff7b3;
+    min-width: 100px;
+}
+
+[hidden] { 
+    display: none !important; 
+}
+
+.btn-bubble:hover {
+    background: #cfc98d;
 }
 
 .delete-all-container {
@@ -1082,7 +1108,7 @@ body {
     
     .btn {
         padding: 12px 16px;
-        font-size: 11px;
+        /*font-size: 11px;*/
         min-height: 48px;
     }
 
@@ -1201,4 +1227,3 @@ body {
         border-width: 3px;
     }
 }
-

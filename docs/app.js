@@ -1,3 +1,8 @@
+// Returns a random integer between min and max (inclusive)
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // Global variables
 let walkData = [];
 let distanceChart = null;
@@ -64,6 +69,272 @@ const recentWalksEl = document.getElementById('recentWalks');
 
 // Leaderboard element
 const leaderboardEl = document.getElementById('leaderboard');
+
+// Help Dialog Element
+const helpDialog = document.querySelector('.help-dialog');
+
+// --- Dialog Tree Engine ---
+(() => {
+  const dialogEl = document.querySelector('.help-dialog');
+  const btnA   = document.getElementById('btn-bubble-A');
+  const btnB   = document.getElementById('btn-bubble-B');
+  const btnC    = document.getElementById('btn-bubble-C');
+
+  // Utility to set a button from config
+  function setBtn(el, cfg, fallbackText) {
+    if (!cfg || cfg.hide) {
+      el.setAttribute('hidden', '');
+      el.disabled = true;
+      el.onclick = null;
+      return;
+    }
+    el.removeAttribute('hidden');
+    el.disabled = !!cfg.disabled;
+    el.textContent = cfg.text || fallbackText;
+    const next = cfg.next || currentNode;
+    el.onclick = () => go(next);
+  }
+
+  // Optional: fake progress animation
+  function fakeProgress(lines, doneNode, interval) {
+
+    let i = 0;
+    const tick = () => {
+      if (i < lines.length) {
+        dialogEl.innerHTML = lines.slice(0, i + 1).join("<br>");
+        i++;
+        setTimeout(tick, randomInt(2500, 8000));
+      } else {
+        go(doneNode);
+      }
+    };
+    tick();
+  }
+
+  // The dialog tree
+  const DIALOG = {
+    start: {
+      html: `
+        <strong>It looks like you're trying to find help.</strong>
+        <br>
+        I will guide you through the steps to solve your issue.
+        <br><br>
+      `,
+      A : { text: "Let's begin", next: "begin" },
+      B : { hide: true },
+      C : { text: "No thank you", next: "areYouSure" }
+    },
+    areYouSure: {
+      html: `
+        <strong>No problem!</strong>
+        <br>
+        Are you sure you don't want any help?
+      `,
+      A : { text: "Start again", next: "start" },
+      C : { text: "I'm sure",     next: "loopBack" }
+    },
+    loopBack: {
+      html: `
+        ⚠️<strong>No Problem!</strong>
+        <br>
+        Let's start from the top🙂👍
+      `,
+      A : { text: "Ok", next: "Q01" },
+      B : { hide: true },
+      C : { hide: true },
+    },
+    begin: {
+      html: `
+        <strong>Perfect!</strong> Let’s complete a short pre-help checklist:
+        <ul>
+          <li>Did you try refreshing the page?</li>
+          <li>Have you tried logging out and logging back in again?</li>
+          <li>Is your browser cache erased?</li>
+          <li>Have you drank enough water today?</li>
+        </ul>
+      `,
+      A : { text: "Done!", next: "Q01" },
+      B : { hide: true },
+      C : { text: "Not completed",   next: "start" }
+    },
+    Q01: {
+      html: `
+        <strong>Great!</strong> let's begin.
+        <br>
+        Let me ask a few questions to narrow down your query.
+        <br>
+        Is your issue related to:
+        <ul>
+          <li><strong>A.</strong> Your previously logged walks?</li>
+          <li><strong>B.</strong> A walk you are trying to log now?</li>
+          <li><strong>C.</strong> Something else.</li>
+        </ul>
+      `,
+      A : { text: "A.", next: "Q02" },
+      B : { text: "B.", next: "Q03"},
+      C : { text: "Something else", next: "Q04" }
+    },
+    Q02: {
+      html: `
+        <strong>Interesting!</strong> So your issue is with your previously logged walks?
+        <br>
+        Is it an issue with:
+        <ul>
+            <li><strong>A.</strong> Missing logs that aren't showing up any more?</li>
+            <li><strong>B.</strong> Logs that shouldn't be there appearing in your list?</li>
+        </ul>
+      `,
+      A : { text: "A.", next: "Q05" },
+      B : { text: "B.", next: "Q06" },
+      C : { text: "Back", next: "loopBack" }
+    },
+    Q03: {
+      html: `
+        <strong>Ah!</strong> So your logs are not appearing after you click to submit?
+        <br>
+      `,
+      A : { text: "Yes", next: "loopBack" },
+      B : { hide: true },
+      C : { text: "Back", next: "loopBack" }
+    },
+    Q05: {
+      html: `
+        <strong>Ok.</strong> Good to know.
+        <br>
+        Let's fix this for you, was it:
+        <ul>
+            <li><strong>A.</strong> A specific log you can't see anymore?</li>
+            <li><strong>B.</strong> All of your logs are gone?</li>
+        </ul>
+      `,
+      A : { text: "A.", next: "Q07" },
+      B : { text: "B.", next: "Q08" },
+      C : { text: "Back", next: "loopBack" }
+    },
+    Q06: {
+      html: `
+        <strong>Geting there!</strong> So you have logs in your data that you didn't record?
+      `,
+      A : { text: "Yes", next: "Q06end" },
+      B : { hide: true },
+      C : { text: "Back", next: "loopBack" }
+    }, 
+    Q06end: {
+      html: `
+        🎉 <strong>Congratulations!</strong>
+        <br>
+        You can delete the logs in the 'Recent Walks' section by clicking the 🗑️ icon.
+      `,
+      A : { hide: true },
+      B : { hide: true },
+      C : { text: "Back to start", next: "start" }
+    },
+    Q07: {
+      html: `
+        <strong>Perfect.</strong>
+        <br>
+        You could try  just logging it again...
+        <br>
+        Or I can try to recover your missing data?
+      `,
+      A : { text: "OK", next: "complete" },
+      B : { text: "Attempt recover", next: "recover" },
+      C : { text: "Back to start", next: "loopBack" }
+    },
+    Q08: {
+      html: `
+        <strong>Oh no!</strong>
+        <br>
+        That's very unfortunate, are you currently logged in?
+      `,
+      A : { text: "Yes", next: "Q08end1" },
+      B : { text: "No", next: "Q08end2" },
+      C : { text: "Back", next: "loopBack" }
+    },
+    Q08end1: {
+      html: `
+        <strong>Well...</strong> I'm stumped.
+        <br>
+        I dunno. 🤷
+      `,
+      A : { hide: true },
+      B : { hide: true },
+      C : { text: "Back", next: "loopBack" }
+    },
+    Q08end2: {
+      html: `
+        ☑️<strong>Plan time!</strong>
+        <br>
+        Try logging in, refresh, and come back.
+      `,
+      A : { hide: true },
+      B : { hide: true },
+      C : { text: "Back", next: "loopBack" }
+    },
+
+    recover: {
+      onEnter() {
+        // Dramatic, pointless progress sequence
+        fakeProgress(
+          [
+            "Analysing database…",
+            "Completing sorting algorythm…",
+            "Calibrating data laser…",
+            "Downloading drivers…",
+            "Attempting recover…",
+          ],
+          "failed"
+        );
+      },
+      // Buttons hidden during fake progress
+      A : { hide: true },
+      B : { hide: true },
+      C : { hide: true }
+    },
+    failed: {
+      html: `
+        ⚠️<strong>FAILED</strong>
+        <br>
+        Unfortunately the recover failed.
+        <br>
+        <strong>Whomp whomp.</strong>
+      `,
+      A : { hide: true },
+      B : { hide: true },
+      C : { text: "Back to start", next: "start" }
+    },
+  };
+
+  let currentNode = 'start';
+
+  function render(node) {
+    const n = DIALOG[node];
+    if (!n) {
+      console.warn(`Missing dialog node: ${node}`);
+      return;
+    }
+    currentNode = node;
+    // Use innerHTML so we can include lists/markup (static strings only).
+    dialogEl.innerHTML = n.html || "";
+
+    setBtn(btnA, n.A, 'OK');
+    setBtn(btnB, n.B, 'Maybe');
+    setBtn(btnC,  n.C,  'Cancel');
+
+    if (typeof n.onEnter === 'function') n.onEnter();
+  }
+
+  function go(node) {
+    render(node);
+  }
+
+  // Expose tiny API (handy for debugging)
+  window.TrollHelp = { go, current: () => currentNode };
+
+  // Kick off
+  render('start');
+})();
+
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1455,6 +1726,13 @@ function showToast(message, type = 'success') {
 
 function showLoading(show) {
     loadingSpinner.style.display = show ? 'flex' : 'none';
+}
+
+// Help Dialog Update
+function updateHelpDialog(newText) {
+    if (helpDialog) {
+        helpDialog.textContent = newText;
+    }
 }
 
 // Delete a specific walk
