@@ -139,6 +139,73 @@ ul {
     margin-top: 5px;
 }
 
+.tab-content::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    background: #c0c0c0;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: #c0c0c0;
+    border: 2px inset #c0c0c0;
+    box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+    min-height: 20px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+    background: #d4d0c8;
+    box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080;
+}
+
+.tab-content::-webkit-scrollbar-thumb:active {
+    background: #a0a0a0;
+    border: 2px inset #c0c0c0;
+    box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
+}
+
+.tab-content::-webkit-scrollbar-button {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+    width: 16px;
+    height: 16px;
+}
+
+.tab-content::-webkit-scrollbar-button:hover {
+    background: #d4d0c8;
+    box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080;
+}
+
+.tab-content::-webkit-scrollbar-button:active {
+    background: #a0a0a0;
+    border: 2px inset #c0c0c0;
+    box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
+}
+
+.tab-content::-webkit-scrollbar-button:vertical:start:decrement {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M4 2L1 6h6z' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tab-content::-webkit-scrollbar-button:vertical:end:increment {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M4 6L1 2h6z' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tab-content::-webkit-scrollbar-corner {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+}
+
 /* Authentication Modal */
 .modal {
     display: none;
@@ -504,6 +571,86 @@ ul {
     color: #000;
     font-family: 'MS Sans Serif', sans-serif;
     text-transform: uppercase;
+}
+
+/* Scrollbars - Windows 95 Style with Highlights and Shadows */
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    background: #c0c0c0;
+}
+
+::-webkit-scrollbar-track {
+    background: #c0c0c0;
+    border: 2px inset #c0c0c0;
+    box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+    min-height: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d4d0c8;
+    box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #a0a0a0;
+    border: 2px inset #c0c0c0;
+    box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
+}
+
+::-webkit-scrollbar-button {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-button:hover {
+    background: #d4d0c8;
+    box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080;
+}
+
+::-webkit-scrollbar-button:active {
+    background: #a0a0a0;
+    border: 2px inset #c0c0c0;
+    box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
+}
+
+::-webkit-scrollbar-button:vertical:start:decrement {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M4 2L1 6h6z' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+::-webkit-scrollbar-button:vertical:end:increment {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M4 6L1 2h6z' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+::-webkit-scrollbar-button:horizontal:start:decrement {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2 4L6 1v6z' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+::-webkit-scrollbar-button:horizontal:end:increment {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M6 4L2 1v6z' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+::-webkit-scrollbar-corner {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
 }
 
 /* Weekly Comparison Section */
