@@ -151,7 +151,7 @@ function setInput(cfg) {
   const DIALOG = {
     start: {
       html: `
-        <strong>It looks like you're trying to find help.</strong>
+        <strong>🗣️ It looks like you're trying to find help.</strong>
         <br>
         I will guide you through the steps to solve your issue.
         <br><br>
@@ -324,7 +324,7 @@ function setInput(cfg) {
       html: `
         📝<strong> Oh no!</strong> 
         <br>
-        Please fill out the toext box with your current problem.
+        Please fill out the text box with your current problem.
         <br>
       `,
       input: {
@@ -402,11 +402,12 @@ function setInput(cfg) {
         // Dramatic, pointless progress sequence
         fakeProgress(
           [
-            "Analysing database…",
+            "-------------------------------------------<br>Analysing database…",
             "Completing sorting algorythm…",
             "Calibrating data laser…",
             "Downloading drivers…",
             "Attempting recover…",
+            "…",
           ],
           "failed"
         );
@@ -511,6 +512,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Check authentication status
 async function checkAuthStatus() {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    updateDocumentTitle();
     if (token) {
         try {
             const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
@@ -542,9 +544,11 @@ function updateAuthUI() {
         loginBtn.style.display = 'none';
         logoutBtn.style.display = 'inline-flex';
         authModal.classList.remove('show');
+        updateDocumentTitle();
     } else {
         loginBtn.style.display = 'inline-flex';
         logoutBtn.style.display = 'none';
+        updateDocumentTitle();
     }
 }
 
@@ -617,6 +621,8 @@ function switchAuthMode(mode) {
 async function handleAuthSubmit(e) {
     e.preventDefault();
     
+    updateDocumentTitle();
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const isRegister = loginSubmitBtn.textContent === 'Register';
@@ -666,6 +672,7 @@ async function handleLogout() {
     updateAuthUI();
     updateSyncStatus();
     showToast('Logged out successfully', 'success');
+    updateDocumentTitle();
     
     // Clear server data and reload local data
     await loadWalkData();
@@ -701,6 +708,17 @@ function updateSyncStatus() {
         syncStatus.className = 'sync-status online';
     }
 }
+
+// Update title with email
+function updateDocumentTitle() {
+    const baseTitle = 'Walk Logger';
+    if (isAuthenticated && currentUser && currentUser.email) {
+        document.title = `${baseTitle} - ${currentUser.email}`;
+    } else {
+        document.title = baseTitle;
+    }
+}
+
 
 // Show sync spinner
 function showSyncSpinner(show) {

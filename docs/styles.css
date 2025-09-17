@@ -36,8 +36,10 @@ ul {
 }
 
 .app-icon {
-    font-size: 20px;
+    font-size: 28px;
+    color: #ffffff;
     margin-right: 8px;
+    transform: translate(8px, -2px);
 }
 
 .app-title {
@@ -46,6 +48,7 @@ ul {
     font-size: 16px;
     font-weight: bold;
     flex: 1;
+    transform: translateX(15px);
 }
 
 .user-controls {
@@ -79,7 +82,7 @@ ul {
 .banner-image {
     max-width: 100%;
     height: auto;
-    min-height: 100px;
+    min-height: 170px;
     margin-bottom: 0px;
     border: 0px inset #c0c0c0;
     background: #fff;
@@ -460,6 +463,11 @@ ul {
 
 .btn-secondary {
     background: #c0c0c0;
+}
+
+.btn-login {
+    font-size: 13px;
+    font-weight: bold;
 }
 
 .btn-help {
@@ -1150,7 +1158,7 @@ ul {
     font-family: 'MS Sans Serif', sans-serif;
     font-size: 12px;
     font-weight: bold;
-    margin: -15px -12px 15px -12px;
+    margin: -8px -8px 8px -8px;
     border-bottom: 1px solid #000;
 }
 
