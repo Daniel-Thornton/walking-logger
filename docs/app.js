@@ -22,6 +22,7 @@ const LOCAL_STORAGE_KEY = 'walkingLoggerData';
 const AUTH_TOKEN_KEY = 'walkingLoggerToken';
 
 // DOM elements
+const appTitleEl = document.querySelector('.app-title');
 const walkForm = document.getElementById('walkForm');
 const dateInput = document.getElementById('date');
 const distanceInput = document.getElementById('distance');
