@@ -18,11 +18,11 @@
     <!-- Mobile-friendly header -->
     <div class="app-header">
         <div class="header-content">
-            <div class="app-icon">🚶&#xFE0E;</div>
+            <div class="app-icon"><img src="images/icons/walk_white_32.png" alt="" class="icon"></div>
             <div class="app-title">Walk Logger</div>
             <div class="user-controls">
-                <button class="btn btn-login" id="loginBtn">👤&#xFE0E; Login</button>
-                <button class="btn btn-login" id="logoutBtn" style="display: none;">🔐&#xFE0E; Logout</button>
+                <button class="btn btn-login" id="loginBtn"><img src="images/icons/users_key-1.png" alt="" class="icon"> Login</button>
+                <button class="btn btn-login" id="logoutBtn" style="display: none;"><img src="images/icons/mouse_padlock.png" alt="" class="icon"> Logout</button>
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
             <div class="banner-container">
                 <img src="images/banner.bmp" alt="Walking Logger" class="banner-image">
                 <div class="streak-counter">
-                    <div class="streak-icon">🔥</div>
+                    <div class="streak-icon"><img src="images/icons/streak_fire.png" alt="" class="icon"></div>
                     <div class="streak-info">
                         <div class="streak-value" id="bannerCurrentStreak">0</div>
                         <div class="streak-label">Day Streak</div>
@@ -43,10 +43,10 @@
 
         <!-- Tab Navigation -->
         <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="log">🖋️ Log Walk</button>
-            <button class="tab-btn" data-tab="visualizations">📊 Charts</button>
-            <button class="tab-btn" data-tab="leaderboard">🥇 Leaderboard</button>
-            <button class="tab-btn" data-tab="help">ℹ️ Help</button>
+            <button class="tab-btn active" data-tab="log"><img src="images/icons/registration-1.png" alt="" class="icon"> Log Walk</button>
+            <button class="tab-btn" data-tab="visualizations"><img src="images/icons/chart1-1.png" alt="" class="icon"> Charts</button>
+            <button class="tab-btn" data-tab="leaderboard"><img src="images/icons/certificate-1.png" alt="" class="icon"> Leaderboard</button>
+            <button class="tab-btn" data-tab="help"><img src="images/icons/help_book_big-1.png" alt="" class="icon"> Help</button>
         </nav>
 
         <main class="main-content">
@@ -91,7 +91,7 @@
                 <!-- Input Form Section -->
                 <section class="input-section">
                     <div class="card form-card">
-                        <div class="window-title">📝 Log Today's Walk</div>
+                        <div class="window-title"><img src="images/icons/registration-1.png" alt="" class="icon"> Log Today's Walk</div>
                         <form id="walkForm" class="walk-form">
                             <div class="form-group">
                                 <label for="date">Date:</label>
@@ -110,7 +110,7 @@
                             
                             <button type="submit" class="btn btn-primary">
                                 <span class="btn-text">Log Walk</span>
-                                <span class="btn-icon">🚶&#xFE0E;</span>
+                                <span class="btn-icon"><img src="images/icons/walk_white_16.png" alt="" class="icon"></span>
                             </button>
                         </form>
                     </div>
@@ -120,25 +120,25 @@
                 <section class="stats-section">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon">🚶</div>
+                            <div class="stat-icon"><img src="images/icons/walk_black_32.png" alt="" class="icon"></div>
                             <div class="stat-value" id="totalWalks">0</div>
                             <div class="stat-label">Total Walks</div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon">🏁</div>
+                            <div class="stat-icon"><img src="images/icons/flag.png" alt="" class="icon"></div>
                             <div class="stat-value" id="totalDistance">0</div>
                             <div class="stat-label">Total Distance</div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon">🔥</div>
+                            <div class="stat-icon"><img src="images/icons/streak.png" alt="" class="icon"></div>
                             <div class="stat-value" id="currentStreak">0</div>
                             <div class="stat-label">Current Streak</div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon">🏆</div>
+                            <div class="stat-icon"><img src="images/icons/streak_long.png" alt="" class="icon"></div>
                             <div class="stat-value" id="longestStreak">0</div>
                             <div class="stat-label">Longest Streak</div>
                         </div>
@@ -156,15 +156,15 @@
                 <!-- Recent Walks Section -->
                 <section class="recent-section">
                     <div class="card">
-                        <div class="window-title">⏳ Recent Walks</div>
+                        <div class="window-title"><img src="images/icons/timer-0.png" alt="" class="icon"> Recent Walks</div>
                         <div class="section-header">
                             <button id="exportBtn" class="btn btn-secondary">
                                 <span class="btn-text">Export CSV</span>
-                                <span class="btn-icon">💾&#xFE0E;</span>
+                                <span class="btn-icon"><img src="images/icons/floppy_disk_16.png" alt="" class="icon"></span>
                             </button>
                             <button id="importBtn" class="btn btn-secondary">
                                 <span class="btn-text">Import CSV</span>
-                                <span class="btn-icon">📁&#xFE0E;</span>
+                                <span class="btn-icon"><img src="images/icons/directory_explorer-1.png" alt="" class="icon"></span>
                             </button>
                         </div>
                         <div id="recentWalks" class="recent-walks"></div>
@@ -174,7 +174,7 @@
                 <!-- Delete All Section -->
                 <section class="delete-all-section">
                     <div class="card">
-                        <div class="window-title">⚠️ Danger Zone</div>
+                        <div class="window-title"><img src="images/icons/msg_warning-2.png" alt="" class="icon"> Danger Zone</div>
                         <div class="delete-all-container">
                             <div class="win98-bubble">
                                 <p class="delete-warning">It looks like you're trying to <b>permanently</b> delete all your walks from both local storage and the database. This action cannot be undone.</p>
@@ -182,7 +182,7 @@
                                 
                                 <button id="deleteAllBtn" class="btn btn-danger">
                                     <span class="btn-text"><b>Delete All Walks</b></span>
-                                    <span class="btn-icon">❌</span>
+                                    <span class="btn-icon"><img src="images/icons/recycle_bin_full-3.png" alt="" class="icon"></span>
                                 </button>
                                 
                             </div>
@@ -230,7 +230,7 @@
             <div id="leaderboardTab" class="tab-content">
                 <section class="leaderboard-section">
                     <div class="card">
-                        <div class="window-title">🏆 Leaderboards</div>
+                        <div class="window-title"><img src="images/icons/certificate-1.png" alt="" class="icon"> Leaderboards</div>
                         <div class="leaderboard-controls">
                             <button class="btn btn-secondary leaderboard-toggle active" data-leaderboard="distance">Distance</button>
                             <button class="btn btn-secondary leaderboard-toggle" data-leaderboard="pace">Best Pace</button>
@@ -287,12 +287,12 @@
         <div class="confirm-dialog">
             <div class="confirm-header">
                 <div>
-                    <span class="confirm-icon">⚠️</span>
+                    <span class="confirm-icon"><img src="images/icons/msg_warning-2.png" alt="" class="icon"></span>
                     <span id="confirmTitle">Confirm Action</span>
                 </div>
             </div>
             <div class="confirm-body">
-                <div class="confirm-warning-icon">⚠️</div>
+                <div class="confirm-warning-icon"><img src="images/icons/msg_warning-2.png" alt="" class="icon"></div>
                 <div class="confirm-message" id="confirmMessage">
                     Are you sure you want to proceed?
                 </div>

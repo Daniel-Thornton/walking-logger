@@ -1244,7 +1244,7 @@ function updateRecentWalks() {
                     </div>
                 </div>
                 <button class="delete-walk-btn" onclick="deleteWalk('${walk.date}', ${distance}, ${timeElapsed})" title="Delete this walk">
-                    🗑️
+                    <img src="images/icons/recycle_bin_empty-3.png" alt="" class="icon">
                 </button>
             </div>
         `;
@@ -1821,13 +1821,13 @@ function updateLeaderboard() {
         
         if (index === 0) {
             rankClass = 'gold';
-            medal = '🥇';
+            medal = '<img src="images/icons/medal_1.png" alt="" class="icon">';
         } else if (index === 1) {
             rankClass = 'silver';
-            medal = '🥈';
+            medal = '<img src="images/icons/medal_2.png" alt="" class="icon">';
         } else if (index === 2) {
             rankClass = 'bronze';
-            medal = '🥉';
+            medal = '<img src="images/icons/medal_3.png" alt="" class="icon">';
         }
         
         const distance = parseFloat(walk.distance) || 0;
