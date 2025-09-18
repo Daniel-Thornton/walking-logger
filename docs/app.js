@@ -36,6 +36,7 @@ const loadingSpinner = document.getElementById('loadingSpinner');
 
 // Banner streak counter element
 const bannerCurrentStreakEl = document.getElementById('bannerCurrentStreak');
+const bannerCurrentStreakIconEl = document.getElementById('bannerStreakIcon');
 
 // Authentication elements
 const authModal = document.getElementById('authModal');
@@ -1007,7 +1008,14 @@ function updateStatistics() {
     // Update banner streak counter if element exists
     if (bannerCurrentStreakEl) {
         animateNumber(bannerCurrentStreakEl, streaks.current);
+        if (streaks.current === 0) {
+            bannerCurrentStreakIconEl.innerHTML = `
+            <div class="streak-icon" id="bannerStreakIcon"><img src="images/icons/streak_empty.png" alt="" class="icon"></div>
+        `;
+        return;
+        }
     }
+
     
     // Update weekly comparison if elements exist
     updateWeeklyComparison(weeklyComparison);
@@ -1266,16 +1274,17 @@ function initializeCharts() {
             datasets: [{
                 label: 'Distance',
                 data: [],
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#667eea',
-                pointBorderColor: '#ffffff',
+                borderColor: '#000080',
+                backgroundColor: '#c0c0c0',
+                borderWidth: 2,
+                fill: false,
+                tension: 0,
+                pointBackgroundColor: '#000080',
+                pointBorderColor: '#000000',
                 pointBorderWidth: 1,
-                pointRadius: 3,
-                pointHoverRadius: 3.2
+                pointRadius: 4,
+                pointHoverRadius: 4,
+                pointStyle: 'rect'
             }]
         },
         options: {
@@ -1283,24 +1292,76 @@ function initializeCharts() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 11
+                        },
+                        boxWidth: 12,
+                        boxHeight: 12
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#ffffe1',
+                    titleColor: '#000000',
+                    bodyColor: '#000000',
+                    borderColor: '#000000',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            const dataPoint = context.raw;
+                            return [
+                                `Distance: ${context.parsed.y}`
+                            ];
+                        }
+                    }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     }
                 },
                 x: {
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     }
                 }
             },
             animation: {
-                duration: 0,
+                duration: 0
+            },
+            interaction: {
+                intersect: false
             }
         }
     });
@@ -1312,11 +1373,12 @@ function initializeCharts() {
             datasets: [{
                 label: 'Walks',
                 data: [],
-                backgroundColor: 'rgba(0, 50, 216, 1)',
-                borderColor: '#0f015eff',
+                backgroundColor: '#000080',
+                borderColor: '#000000',
                 borderWidth: 1,
-                pointRadius: 2.8,
-                pointHoverRadius: 3.2
+                pointRadius: 4,
+                pointHoverRadius: 4,
+                pointStyle: 'rect'
             }]
         },
         options: {
@@ -1324,9 +1386,24 @@ function initializeCharts() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 11
+                        },
+                        boxWidth: 12,
+                        boxHeight: 12
+                    }
                 },
                 tooltip: {
+                    backgroundColor: '#ffffe1',
+                    titleColor: '#000000',
+                    bodyColor: '#000000',
+                    borderColor: '#000000',
+                    borderWidth: 1,
                     callbacks: {
                         label: function(context) {
                             const dataPoint = context.raw;
@@ -1344,24 +1421,58 @@ function initializeCharts() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Time Elapsed (minutes)'
+                        text: 'Time Elapsed (minutes)',
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 11
+                        }
                     },
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'Distance'
+                        text: 'Distance',
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 11
+                        }
                     },
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     }
                 }
             },
             animation: {
-                duration: 0,
+                duration: 0
             }
         }
     });
@@ -1375,32 +1486,44 @@ function initializeCharts() {
                 {
                     label: '7-day Average',
                     data: [],
-                    borderColor: '#ff6b6b',
-                    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                    borderColor: '#800000',
+                    backgroundColor: '#c0c0c0',
                     borderWidth: 2,
                     fill: false,
-                    tension: 0.4,
-                    pointRadius: 2
+                    tension: 0,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#800000',
+                    pointBorderColor: '#000000',
+                    pointBorderWidth: 1,
+                    pointStyle: 'circle'
                 },
                 {
                     label: '14-day Average',
                     data: [],
-                    borderColor: '#4ecdc4',
-                    backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                    borderColor: '#008000',
+                    backgroundColor: '#c0c0c0',
                     borderWidth: 2,
                     fill: false,
-                    tension: 0.4,
-                    pointRadius: 2
+                    tension: 0,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#008000',
+                    pointBorderColor: '#000000',
+                    pointBorderWidth: 1,
+                    pointStyle: 'triangle'
                 },
                 {
                     label: '30-day Average',
                     data: [],
-                    borderColor: '#45b7d1',
-                    backgroundColor: 'rgba(69, 183, 209, 0.1)',
+                    borderColor: '#000080',
+                    backgroundColor: '#c0c0c0',
                     borderWidth: 2,
                     fill: false,
-                    tension: 0.4,
-                    pointRadius: 2
+                    tension: 0,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#000080',
+                    pointBorderColor: '#000000',
+                    pointBorderWidth: 1,
+                    pointStyle: 'rect'
                 }
             ]
         },
@@ -1412,8 +1535,27 @@ function initializeCharts() {
                     display: true,
                     position: 'top',
                     labels: {
+                        color: '#000000',
                         font: {
+                            family: 'MS Sans Serif, sans-serif',
                             size: 10
+                        },
+                        boxWidth: 12,
+                        boxHeight: 12
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#ffffe1',
+                    titleColor: '#000000',
+                    bodyColor: '#000000',
+                    borderColor: '#000000',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            const dataPoint = context.raw;
+                            return [
+                                `Distance: ${context.parsed.y}`
+                            ];
                         }
                     }
                 }
@@ -1422,18 +1564,41 @@ function initializeCharts() {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     }
                 },
                 x: {
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     }
                 }
             },
             animation: {
-                duration: 1000,
-                easing: 'easeOutQuart'
+                duration: 0
             }
         }
     });
@@ -1446,16 +1611,17 @@ function initializeCharts() {
             datasets: [{
                 label: 'Pace (min/distance)',
                 data: [],
-                borderColor: '#96ceb4',
-                backgroundColor: 'rgba(150, 206, 180, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#96ceb4',
-                pointBorderColor: '#ffffff',
+                borderColor: '#008080',
+                backgroundColor: '#c0c0c0',
+                borderWidth: 2,
+                fill: false,
+                tension: 0,
+                pointBackgroundColor: '#008080',
+                pointBorderColor: '#000000',
                 pointBorderWidth: 1,
-                pointRadius: 3,
-                pointHoverRadius: 3.2
+                pointRadius: 4,
+                pointHoverRadius: 4,
+                pointStyle: 'circle'
             }]
         },
         options: {
@@ -1463,29 +1629,82 @@ function initializeCharts() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 11
+                        },
+                        boxWidth: 12,
+                        boxHeight: 12
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#ffffe1',
+                    titleColor: '#000000',
+                    bodyColor: '#000000',
+                    borderColor: '#000000',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            const dataPoint = context.raw;
+                            return [
+                                `Pace: ${context.parsed.y}`
+                            ];
+                        }
+                    }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: false,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     },
                     title: {
                         display: true,
-                        text: 'Pace (min/distance)'
+                        text: 'Pace (min/distance)',
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 11
+                        }
                     }
                 },
                 x: {
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
                     }
                 }
             },
             animation: {
-                duration: 1000,
-                easing: 'easeOutQuart'
+                duration: 0
             }
         }
     });

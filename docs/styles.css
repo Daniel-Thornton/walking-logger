@@ -19,7 +19,9 @@ ul {
 
 /* Mobile-friendly app header */
 .app-header {
-    background: linear-gradient(90deg, #0000ff 0%, #000080 100%);
+    background: url('images/dither.png'), linear-gradient(90deg, #0000ff 0%, #000080 100%);
+    background-blend-mode: multiply;
+    filter: brightness(1.1) contrast(0.8) saturate(1.5);
     padding: 10px;
     position: sticky;
     top: 0;
@@ -349,7 +351,7 @@ ul {
 }
 
 .tab-btn.active {
-    background: #c0c0c0;
+    background: #a8a8a8;
     border: 2px inset #c0c0c0;
     font-weight: bold;
 }
@@ -479,6 +481,10 @@ ul {
     font-size: 14px;
 }
 
+.icon {
+    transform: translate(0px,1px);
+}
+
 .textInputCont {
     display: flex;
     width: 100%;
@@ -508,6 +514,10 @@ ul {
 
 .btn-bubble:hover {
     background: #cfc98d;
+}
+
+.btn-bubble:active {
+    background: #fff7b3;
 }
 
 .delete-all-container {
@@ -1153,7 +1163,9 @@ ul {
 
 /* Window-like title bars */
 .window-title {
-    background: linear-gradient(90deg, #0000ff 0%, #000080 100%);
+    background: url('images/dither.png'), linear-gradient(90deg, #0000ff 0%, #000080 100%);
+    background-blend-mode: multiply;
+    filter: brightness(1.1) contrast(0.8) saturate(1.5);
     color: #fff;
     padding: 6px 10px;
     font-family: 'MS Sans Serif', sans-serif;
