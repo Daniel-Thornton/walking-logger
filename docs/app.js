@@ -1300,8 +1300,7 @@ function initializeCharts() {
                 }
             },
             animation: {
-                duration: 1000,
-                easing: 'easeOutQuart'
+                duration: 0,
             }
         }
     });
@@ -1362,8 +1361,7 @@ function initializeCharts() {
                 }
             },
             animation: {
-                duration: 1000,
-                easing: 'easeOutQuart'
+                duration: 0,
             }
         }
     });

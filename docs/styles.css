@@ -39,7 +39,7 @@ ul {
     font-size: 28px;
     color: #ffffff;
     margin-right: 8px;
-    transform: translate(8px, -2px);
+    transform: translate(0px, 2px);
 }
 
 .app-title {
@@ -48,7 +48,7 @@ ul {
     font-size: 16px;
     font-weight: bold;
     flex: 1;
-    transform: translateX(15px);
+    transform: translateX(5px);
 }
 
 .user-controls {
