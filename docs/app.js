@@ -9,17 +9,20 @@ let distanceChart = null;
 let timeDistanceChart = null;
 let movingAveragesChart = null;
 let paceTrendsChart = null;
+let cumulativeChart = null;
 let currentMovingAverageView = 'distance';
 let currentLeaderboardView = 'distance';
 let isAuthenticated = false;
 let currentUser = null;
 let syncQueue = [];
 let isOnline = navigator.onLine;
+let yearlyGoal = 0;
 
 // API Configuration
 const API_BASE_URL = 'https://walking-logger-production.up.railway.app';
 const LOCAL_STORAGE_KEY = 'walkingLoggerData';
 const AUTH_TOKEN_KEY = 'walkingLoggerToken';
+const GOAL_STORAGE_KEY = 'walkingLoggerGoal';
 
 // DOM elements
 const appTitleEl = document.querySelector('.app-title');
@@ -583,6 +586,26 @@ function setupEventListeners() {
         }
     });
     
+    // Goal setting event listener
+    const setGoalBtn = document.getElementById('setGoalBtn');
+    if (setGoalBtn) {
+        setGoalBtn.addEventListener('click', () => {
+            const yearlyGoalInput = document.getElementById('yearlyGoal');
+            const goalValue = parseFloat(yearlyGoalInput.value);
+            
+            if (goalValue && goalValue > 0) {
+                saveYearlyGoal(goalValue);
+                showToast('Yearly goal set successfully!', 'success');
+                updateCharts(); // Update cumulative chart with new goal
+            } else {
+                showToast('Please enter a valid goal distance', 'error');
+            }
+        });
+    }
+    
+    // Load yearly goal on startup
+    loadYearlyGoal();
+    
     // Add input animations
     const inputs = document.querySelectorAll('input, textarea');
     inputs.forEach(input => {
@@ -979,6 +1002,71 @@ function loadSyncQueue() {
     syncQueue = JSON.parse(localStorage.getItem('walkingLoggerSyncQueue') || '[]');
 }
 
+// Goal management functions
+function loadYearlyGoal() {
+    const currentYear = new Date().getFullYear();
+    const goalData = JSON.parse(localStorage.getItem(GOAL_STORAGE_KEY) || '{}');
+    yearlyGoal = goalData[currentYear] || 0;
+    
+    // Update UI
+    const yearlyGoalInput = document.getElementById('yearlyGoal');
+    if (yearlyGoalInput && yearlyGoal > 0) {
+        yearlyGoalInput.value = yearlyGoal;
+    }
+    
+    updateGoalProgress();
+}
+
+function saveYearlyGoal(goal) {
+    const currentYear = new Date().getFullYear();
+    const goalData = JSON.parse(localStorage.getItem(GOAL_STORAGE_KEY) || '{}');
+    goalData[currentYear] = parseFloat(goal);
+    localStorage.setItem(GOAL_STORAGE_KEY, JSON.stringify(goalData));
+    yearlyGoal = parseFloat(goal);
+    updateGoalProgress();
+}
+
+function updateGoalProgress() {
+    const currentYear = new Date().getFullYear();
+    const yearProgress = calculateYearProgress();
+    
+    // Update progress display
+    const yearProgressEl = document.getElementById('yearProgress');
+    const goalProgressFillEl = document.getElementById('goalProgressFill');
+    const goalPercentageEl = document.getElementById('goalPercentage');
+    
+    if (yearProgressEl && goalProgressFillEl && goalPercentageEl) {
+        if (yearlyGoal > 0) {
+            const percentage = Math.min((yearProgress / yearlyGoal) * 100, 100);
+            yearProgressEl.textContent = `${yearProgress.toFixed(2)} / ${yearlyGoal}`;
+            goalProgressFillEl.style.width = `${percentage}%`;
+            goalPercentageEl.textContent = `${percentage.toFixed(1)}%`;
+            
+            // Change color based on progress
+            if (percentage >= 100) {
+                goalProgressFillEl.style.backgroundColor = '#008000'; // Green
+            } else if (percentage >= 75) {
+                goalProgressFillEl.style.backgroundColor = '#808000'; // Yellow-green
+            } else if (percentage >= 50) {
+                goalProgressFillEl.style.backgroundColor = '#ffff00'; // Yellow
+            } else {
+                goalProgressFillEl.style.backgroundColor = '#ff0000'; // Red
+            }
+        } else {
+            yearProgressEl.textContent = `${yearProgress.toFixed(2)} / No Goal Set`;
+            goalProgressFillEl.style.width = '0%';
+            goalPercentageEl.textContent = '0%';
+        }
+    }
+}
+
+function calculateYearProgress() {
+    const currentYear = new Date().getFullYear();
+    return walkData
+        .filter(walk => new Date(walk.date).getFullYear() === currentYear)
+        .reduce((sum, walk) => sum + (parseFloat(walk.distance) || 0), 0);
+}
+
 // Update statistics (same as original but adapted)
 function updateStatistics() {
     const totalWalks = walkData.length;
@@ -1263,6 +1351,7 @@ function updateRecentWalks() {
 function initializeCharts() {
     const distanceCtx = document.getElementById('distanceChart').getContext('2d');
     const timeDistanceCtx = document.getElementById('timeDistanceChart').getContext('2d');
+    const cumulativeCtx = document.getElementById('cumulativeChart').getContext('2d');
     const movingAveragesCtx = document.getElementById('movingAveragesChart').getContext('2d');
     const paceTrendsCtx = document.getElementById('paceTrendsChart').getContext('2d');
     
@@ -1709,6 +1798,113 @@ function initializeCharts() {
         }
     });
     
+    // Cumulative Distance Progress Chart
+    cumulativeChart = new Chart(cumulativeCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Cumulative Distance',
+                    data: [],
+                    borderColor: '#000080',
+                    backgroundColor: '#c0c0c0',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#000080',
+                    pointBorderColor: '#000000',
+                    pointBorderWidth: 1,
+                    pointStyle: 'circle'
+                },
+                {
+                    label: 'Goal Line',
+                    data: [],
+                    borderColor: '#ff0000',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                },
+                {
+                    label: 'Projection',
+                    data: [],
+                    borderColor: '#808080',
+                    backgroundColor: 'transparent',
+                    borderWidth: 1,
+                    borderDash: [2, 2],
+                    fill: false,
+                    tension: 0,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        },
+                        boxWidth: 12,
+                        boxHeight: 12
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
+                    }
+                },
+                x: {
+                    grid: {
+                        color: '#808080',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#000000',
+                        font: {
+                            family: 'MS Sans Serif, sans-serif',
+                            size: 10
+                        }
+                    },
+                    border: {
+                        color: '#000000',
+                        width: 2
+                    }
+                }
+            },
+            animation: {
+                duration: 0
+            }
+        }
+    });
+    
     // Set up chart toggle event listeners
     setupChartToggles();
     
@@ -1780,6 +1976,10 @@ function updateCharts() {
     
     if (paceTrendsChart) {
         updatePaceTrendsChart();
+    }
+    
+    if (cumulativeChart) {
+        updateCumulativeChart();
     }
 }
 
@@ -1865,6 +2065,98 @@ function updatePaceTrendsChart() {
     paceTrendsChart.data.labels = paceData.map(point => formatDate(point.date));
     paceTrendsChart.data.datasets[0].data = paceData.map(point => point.pace.toFixed(2));
     paceTrendsChart.update('active');
+}
+
+// Update cumulative chart
+function updateCumulativeChart() {
+    if (!cumulativeChart || walkData.length === 0) return;
+    
+    const currentYear = new Date().getFullYear();
+    
+    // Filter walks for current year and sort by date
+    const yearWalks = walkData
+        .filter(walk => new Date(walk.date).getFullYear() === currentYear)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    if (yearWalks.length === 0) {
+        cumulativeChart.data.labels = [];
+        cumulativeChart.data.datasets[0].data = [];
+        cumulativeChart.data.datasets[1].data = [];
+        cumulativeChart.data.datasets[2].data = [];
+        cumulativeChart.update('active');
+        return;
+    }
+    
+    // Calculate cumulative distances
+    let cumulativeDistance = 0;
+    const cumulativeData = [];
+    const labels = [];
+    
+    yearWalks.forEach(walk => {
+        cumulativeDistance += parseFloat(walk.distance) || 0;
+        cumulativeData.push(cumulativeDistance);
+        labels.push(formatDate(walk.date));
+    });
+    
+    // Update cumulative distance data
+    cumulativeChart.data.labels = labels;
+    cumulativeChart.data.datasets[0].data = cumulativeData;
+    
+    // Calculate goal line and projection if goal is set
+    if (yearlyGoal > 0) {
+        // Goal line - straight line from 0 to goal over the year
+        const startOfYear = new Date(currentYear, 0, 1);
+        const endOfYear = new Date(currentYear, 11, 31);
+        const totalDaysInYear = Math.ceil((endOfYear - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+        
+        // Calculate goal line data points
+        const goalLineData = [];
+        const firstWalkDate = new Date(yearWalks[0].date);
+        const lastWalkDate = new Date(yearWalks[yearWalks.length - 1].date);
+        
+        // Add goal line points for the range of actual data
+        yearWalks.forEach(walk => {
+            const walkDate = new Date(walk.date);
+            const dayOfYear = Math.ceil((walkDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+            const expectedDistance = (yearlyGoal * dayOfYear) / totalDaysInYear;
+            goalLineData.push(expectedDistance);
+        });
+        
+        cumulativeChart.data.datasets[1].data = goalLineData;
+        
+        // Calculate projection based on current pace
+        if (cumulativeData.length > 1) {
+            const projectionData = [...cumulativeData];
+            const currentDate = new Date();
+            const lastDataDate = new Date(yearWalks[yearWalks.length - 1].date);
+            
+            // Only show projection if we're not at the end of the year
+            if (currentDate < endOfYear) {
+                const daysFromStart = Math.ceil((lastDataDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+                const currentPace = cumulativeDistance / daysFromStart;
+                const projectedYearEnd = currentPace * totalDaysInYear;
+                
+                // Add projection point at year end
+                const endOfYearLabel = formatDate(endOfYear.toISOString().split('T')[0]);
+                if (!labels.includes(endOfYearLabel)) {
+                    projectionData.push(projectedYearEnd);
+                    // Don't add to main labels, just extend projection data
+                }
+                
+                cumulativeChart.data.datasets[2].data = projectionData;
+            } else {
+                cumulativeChart.data.datasets[2].data = [];
+            }
+        } else {
+            cumulativeChart.data.datasets[2].data = [];
+        }
+    } else {
+        // No goal set, clear goal line and projection
+        cumulativeChart.data.datasets[1].data = [];
+        cumulativeChart.data.datasets[2].data = [];
+    }
+    
+    cumulativeChart.update('active');
 }
 
 // Consolidate walk data by date, adding distances together
