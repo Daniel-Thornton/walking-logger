@@ -26,6 +26,8 @@ const GOAL_STORAGE_KEY = 'walkingLoggerGoal';
 
 // DOM elements
 const appTitleEl = document.querySelector('.app-title');
+const characterIconEl = document.getElementById('characterIcon');
+const welcomeMessageEl = document.getElementById('welcomeMessage')
 const walkForm = document.getElementById('walkForm');
 const dateInput = document.getElementById('date');
 const distanceInput = document.getElementById('distance');
@@ -507,12 +509,93 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Update sync status
     updateSyncStatus();
+
+    // Update character
+    setChar();
     
     // Process any queued sync operations
     if (isAuthenticated && isOnline) {
         await processSyncQueue();
     }
 });
+
+ // randomise top character and message
+function setChar() {
+    
+    const randomChar = randomInt(1, 4);
+    if (randomChar === 1) {
+        characterIconEl.innerHTML = `
+            <img src="images/icons/characters/agent.png" alt="Walking Logger" class="icon-char" id="characterIcon">
+        `;
+    }
+    if (randomChar === 2) {
+        characterIconEl.innerHTML = `
+            <img src="images/icons/characters/cartoon.png" alt="Walking Logger" class="icon-char" id="characterIcon">
+        `;
+    }
+    if (randomChar === 3) {
+        characterIconEl.innerHTML = `
+            <img src="images/icons/characters/doctor.png" alt="Walking Logger" class="icon-char" id="characterIcon">
+        `;
+    }
+    if (randomChar === 4) {
+        characterIconEl.innerHTML = `
+            <img src="images/icons/characters/king.png" alt="Walking Logger" class="icon-char" id="characterIcon">
+        `;
+    }
+
+    const randomMsg = randomInt(1,10);
+    if (randomMsg === 1) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Welcome to your personal walking logger app, make sure to get one in <b>every day!</b></p>
+        `;
+    }
+    if (randomMsg === 2) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Keep moving, keep logging, your future self will thank you!</p>
+        `;
+    }
+    if (randomMsg === 3) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">A sip of water before and after your walk goes a long way.</p>
+        `;
+    }
+    if (randomMsg === 4) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Welcome back! Every walk counts, get today’s logged.</p>
+        `;
+    }
+    if (randomMsg === 5) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Walking regularly can reduce your risk of heart disease by up to 30%</p>
+        `;
+    }
+    if (randomMsg === 6) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Loosen those calves before your next stroll.</p>
+        `;
+    }
+    if (randomMsg === 7) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Great job logging today’s walk, consistency is your superpower.</p>
+        `;
+    }
+    if (randomMsg === 8) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Another one logged! Keep the streak alive.</p>
+        `;
+    }
+    if (randomMsg === 9) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Done walking? Time to relax those feet.</p>
+        `;
+    }
+    if (randomMsg === 10) {
+        welcomeMessageEl.innerHTML = `
+            <p class="delete-warning">Walking is proven to sharpen memory and focus. You just gave your brain a tune-up!</p>
+        `;
+    }
+}
 
 // Check authentication status
 async function checkAuthStatus() {

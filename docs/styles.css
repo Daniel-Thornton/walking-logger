@@ -109,6 +109,18 @@ ul {
     min-width: 80px;
 }
 
+.character {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'MS Sans Serif', sans-serif;
+    min-width: 80px;
+}
+
 .streak-icon {
     font-size: 25px;
     line-height: 1;
