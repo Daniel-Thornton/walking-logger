@@ -96,8 +96,8 @@ ul {
 
 .streak-counter {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 10px;
+    right: 10px;
     background: rgba(192, 192, 192, 0.95);
     border: 2px outset #c0c0c0;
     padding: 8px 12px;
@@ -111,8 +111,8 @@ ul {
 
 .distance-counter {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 10px;
+    left: 10px;
     background: rgba(192, 192, 192, 0.95);
     border: 2px outset #c0c0c0;
     padding: 8px 12px;
@@ -1536,3 +1536,4 @@ ul {
         border-width: 3px;
     }
 }
+
