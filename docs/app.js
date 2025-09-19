@@ -1117,6 +1117,8 @@ function updateGoalProgress() {
     const yearProgressEl = document.getElementById('yearProgress');
     const goalProgressFillEl = document.getElementById('goalProgressFill');
     const goalPercentageEl = document.getElementById('goalPercentage');
+    const goalProgressFillBanEl = document.getElementById('goalProgressFillBan');
+    const goalPercentageBanEl = document.getElementById('goalPercentageBan');
     
     if (yearProgressEl && goalProgressFillEl && goalPercentageEl) {
         if (yearlyGoal > 0) {
@@ -1139,6 +1141,16 @@ function updateGoalProgress() {
             yearProgressEl.textContent = `${yearProgress.toFixed(2)} / No Goal Set`;
             goalProgressFillEl.style.width = '0%';
             goalPercentageEl.textContent = '0%';
+        }
+    }
+    if (goalProgressFillBanEl && goalPercentageBanEl) {
+        if (yearlyGoal > 0) {
+            const percentage = Math.min((yearProgress / yearlyGoal) * 100, 100);
+            goalProgressFillBanEl.style.width = `${percentage}%`;
+            goalPercentageBanEl.textContent = `${percentage.toFixed(1)}%`;
+        } else {
+            goalProgressFillBanEl.style.width = '0%';
+            goalPercentageBanEl.textContent = '0%';
         }
     }
 }

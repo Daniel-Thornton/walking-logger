@@ -109,6 +109,21 @@ ul {
     min-width: 80px;
 }
 
+.distance-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(192, 192, 192, 0.95);
+    border: 2px outset #c0c0c0;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'MS Sans Serif', sans-serif;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    min-width: 80px;
+}
+
 .character {
     position: absolute;
     top: 5px;
@@ -142,7 +157,7 @@ ul {
 }
 
 .streak-label {
-    font-size: 15px;
+    font-size: 12px;
     color: #000;
     text-transform: uppercase;
     font-weight: bold;
