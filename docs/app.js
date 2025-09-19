@@ -577,7 +577,7 @@ function setChar() {
     }
     if (randomMsg === 7) {
         welcomeMessageEl.innerHTML = `
-            <p class="delete-warning">Great job logging today’s walk, consistency is your superpower.</p>
+            <p class="delete-warning">Great job logging today’s walk, consistency is key.</p>
         `;
     }
     if (randomMsg === 8) {
@@ -592,7 +592,7 @@ function setChar() {
     }
     if (randomMsg === 10) {
         welcomeMessageEl.innerHTML = `
-            <p class="delete-warning">Walking is proven to sharpen memory and focus. You just gave your brain a tune-up!</p>
+            <p class="delete-warning">Walking is proven to sharpen memory and focus.</p>
         `;
     }
 }
