@@ -1043,15 +1043,15 @@ function updateGoalProgress() {
             goalPercentageEl.textContent = `${percentage.toFixed(1)}%`;
             
             // Change color based on progress
-            if (percentage >= 100) {
-                goalProgressFillEl.style.backgroundColor = '#008000'; // Green
-            } else if (percentage >= 75) {
-                goalProgressFillEl.style.backgroundColor = '#808000'; // Yellow-green
-            } else if (percentage >= 50) {
-                goalProgressFillEl.style.backgroundColor = '#ffff00'; // Yellow
-            } else {
-                goalProgressFillEl.style.backgroundColor = '#ff0000'; // Red
-            }
+            //if (percentage >= 100) {
+            //    goalProgressFillEl.style.backgroundColor = '#008000'; // Green
+            //} else if (percentage >= 75) {
+            //    goalProgressFillEl.style.backgroundColor = '#808000'; // Yellow-green
+            //} else if (percentage >= 50) {
+            //    goalProgressFillEl.style.backgroundColor = '#ffff00'; // Yellow
+            //} else {
+            //    goalProgressFillEl.style.backgroundColor = '#ff0000'; // Red
+            //}
         } else {
             yearProgressEl.textContent = `${yearProgress.toFixed(2)} / No Goal Set`;
             goalProgressFillEl.style.width = '0%';
@@ -1367,12 +1367,12 @@ function initializeCharts() {
                 backgroundColor: '#c0c0c0',
                 borderWidth: 2,
                 fill: false,
-                tension: 0,
+                tension: 0.1,
                 pointBackgroundColor: '#000080',
                 pointBorderColor: '#000000',
                 pointBorderWidth: 1,
-                pointRadius: 4,
-                pointHoverRadius: 4,
+                pointRadius: 1,
+                pointHoverRadius: 1,
                 pointStyle: 'rect'
             }]
         },
@@ -1465,8 +1465,8 @@ function initializeCharts() {
                 backgroundColor: '#000080',
                 borderColor: '#000000',
                 borderWidth: 1,
-                pointRadius: 4,
-                pointHoverRadius: 4,
+                pointRadius: 2,
+                pointHoverRadius: 2,
                 pointStyle: 'rect'
             }]
         },
@@ -1580,7 +1580,7 @@ function initializeCharts() {
                     borderWidth: 2,
                     fill: false,
                     tension: 0,
-                    pointRadius: 3,
+                    pointRadius: 1.5,
                     pointBackgroundColor: '#800000',
                     pointBorderColor: '#000000',
                     pointBorderWidth: 1,
@@ -1594,7 +1594,7 @@ function initializeCharts() {
                     borderWidth: 2,
                     fill: false,
                     tension: 0,
-                    pointRadius: 3,
+                    pointRadius: 1.5,
                     pointBackgroundColor: '#008000',
                     pointBorderColor: '#000000',
                     pointBorderWidth: 1,
@@ -1608,7 +1608,7 @@ function initializeCharts() {
                     borderWidth: 2,
                     fill: false,
                     tension: 0,
-                    pointRadius: 3,
+                    pointRadius: 1.5,
                     pointBackgroundColor: '#000080',
                     pointBorderColor: '#000000',
                     pointBorderWidth: 1,
@@ -1704,12 +1704,12 @@ function initializeCharts() {
                 backgroundColor: '#c0c0c0',
                 borderWidth: 2,
                 fill: false,
-                tension: 0,
+                tension: 0.1,
                 pointBackgroundColor: '#008080',
                 pointBorderColor: '#000000',
                 pointBorderWidth: 1,
-                pointRadius: 4,
-                pointHoverRadius: 4,
+                pointRadius: 1,
+                pointHoverRadius: 1,
                 pointStyle: 'circle'
             }]
         },
@@ -1808,35 +1808,32 @@ function initializeCharts() {
                     label: 'Cumulative Distance',
                     data: [],
                     borderColor: '#000080',
-                    backgroundColor: '#c0c0c0',
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#000080',
-                    pointBorderColor: '#000000',
-                    pointBorderWidth: 1,
-                    pointStyle: 'circle'
-                },
-                {
-                    label: 'Goal Line',
-                    data: [],
-                    borderColor: '#ff0000',
                     backgroundColor: 'transparent',
                     borderWidth: 2,
-                    borderDash: [5, 5],
                     fill: false,
                     tension: 0,
                     pointRadius: 0,
                     pointHoverRadius: 0
                 },
                 {
-                    label: 'Projection',
+                    label: 'Goal Line',
+                    data: [],
+                    borderColor: '#ff0000',
+                    backgroundColor: 'transparent',
+                    borderWidth: 3,
+                    borderDash: [7, 5],
+                    fill: false,
+                    tension: 0,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                },
+                {
+                    label: 'Trend Line',
                     data: [],
                     borderColor: '#808080',
                     backgroundColor: 'transparent',
-                    borderWidth: 1,
-                    borderDash: [2, 2],
+                    borderWidth: 3,
+                    borderDash: [5, 3],
                     fill: false,
                     tension: 0,
                     pointRadius: 0,
@@ -1860,6 +1857,13 @@ function initializeCharts() {
                         boxWidth: 12,
                         boxHeight: 12
                     }
+                },
+                tooltip: {
+                    backgroundColor: '#ffffe1',
+                    titleColor: '#000000',
+                    bodyColor: '#000000',
+                    borderColor: '#000000',
+                    borderWidth: 1,
                 }
             },
             scales: {
@@ -2069,84 +2073,97 @@ function updatePaceTrendsChart() {
 
 // Update cumulative chart
 function updateCumulativeChart() {
-    if (!cumulativeChart || walkData.length === 0) return;
+    if (!cumulativeChart) return;
     
     const currentYear = new Date().getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1);
+    const endOfYear = new Date(currentYear, 11, 31);
+    const totalDaysInYear = Math.ceil((endOfYear - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
     
-    // Filter walks for current year and sort by date
+    // Generate full year timeline (every day of the year)
+    const fullYearLabels = [];
+    const fullYearData = [];
+    
+    // Filter walks for current year and create lookup map
     const yearWalks = walkData
         .filter(walk => new Date(walk.date).getFullYear() === currentYear)
         .sort((a, b) => new Date(a.date) - new Date(b.date));
     
-    if (yearWalks.length === 0) {
-        cumulativeChart.data.labels = [];
-        cumulativeChart.data.datasets[0].data = [];
-        cumulativeChart.data.datasets[1].data = [];
-        cumulativeChart.data.datasets[2].data = [];
-        cumulativeChart.update('active');
-        return;
-    }
-    
-    // Calculate cumulative distances
-    let cumulativeDistance = 0;
-    const cumulativeData = [];
-    const labels = [];
-    
+    // Create a map of date -> cumulative distance for walks
+    const walkMap = {};
+    let runningTotal = 0;
     yearWalks.forEach(walk => {
-        cumulativeDistance += parseFloat(walk.distance) || 0;
-        cumulativeData.push(cumulativeDistance);
-        labels.push(formatDate(walk.date));
+        runningTotal += parseFloat(walk.distance) || 0;
+        walkMap[walk.date] = runningTotal;
     });
     
+    // Generate data for every day of the year
+    let currentCumulative = 0;
+    for (let dayOfYear = 1; dayOfYear <= totalDaysInYear; dayOfYear++) {
+        const currentDate = new Date(currentYear, 0, dayOfYear);
+        const dateString = currentDate.toISOString().split('T')[0];
+        
+        // Check if there's a walk on this date
+        if (walkMap[dateString] !== undefined) {
+            currentCumulative = walkMap[dateString];
+        }
+        
+        // Add every 7th day to reduce label density (weekly markers)
+        if (dayOfYear % 7 === 1 || dayOfYear === 1 || dayOfYear === totalDaysInYear) {
+            fullYearLabels.push(formatDate(dateString));
+        } else {
+            fullYearLabels.push(''); // Empty label for non-marker days
+        }
+        
+        fullYearData.push(currentCumulative);
+    }
+    
     // Update cumulative distance data
-    cumulativeChart.data.labels = labels;
-    cumulativeChart.data.datasets[0].data = cumulativeData;
+    cumulativeChart.data.labels = fullYearLabels;
+    cumulativeChart.data.datasets[0].data = fullYearData;
     
     // Calculate goal line and projection if goal is set
     if (yearlyGoal > 0) {
-        // Goal line - straight line from 0 to goal over the year
-        const startOfYear = new Date(currentYear, 0, 1);
-        const endOfYear = new Date(currentYear, 11, 31);
-        const totalDaysInYear = Math.ceil((endOfYear - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
-        
-        // Calculate goal line data points
+        // Goal line - straight line from 0 to goal over the full year
         const goalLineData = [];
-        const firstWalkDate = new Date(yearWalks[0].date);
-        const lastWalkDate = new Date(yearWalks[yearWalks.length - 1].date);
-        
-        // Add goal line points for the range of actual data
-        yearWalks.forEach(walk => {
-            const walkDate = new Date(walk.date);
-            const dayOfYear = Math.ceil((walkDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+        for (let dayOfYear = 1; dayOfYear <= totalDaysInYear; dayOfYear++) {
             const expectedDistance = (yearlyGoal * dayOfYear) / totalDaysInYear;
             goalLineData.push(expectedDistance);
-        });
-        
+        }
         cumulativeChart.data.datasets[1].data = goalLineData;
         
-        // Calculate projection based on current pace
-        if (cumulativeData.length > 1) {
-            const projectionData = [...cumulativeData];
-            const currentDate = new Date();
-            const lastDataDate = new Date(yearWalks[yearWalks.length - 1].date);
+        // Calculate trend line using linear regression on actual walk dates
+        const trendLineData = [];
+        
+        if (yearWalks.length >= 2) {
+            // Prepare data points for linear regression (day of year vs cumulative distance)
+            const dataPoints = [];
+            let cumulativeForTrend = 0;
             
-            // Only show projection if we're not at the end of the year
-            if (currentDate < endOfYear) {
-                const daysFromStart = Math.ceil((lastDataDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
-                const currentPace = cumulativeDistance / daysFromStart;
-                const projectedYearEnd = currentPace * totalDaysInYear;
-                
-                // Add projection point at year end
-                const endOfYearLabel = formatDate(endOfYear.toISOString().split('T')[0]);
-                if (!labels.includes(endOfYearLabel)) {
-                    projectionData.push(projectedYearEnd);
-                    // Don't add to main labels, just extend projection data
-                }
-                
-                cumulativeChart.data.datasets[2].data = projectionData;
-            } else {
-                cumulativeChart.data.datasets[2].data = [];
+            yearWalks.forEach(walk => {
+                cumulativeForTrend += parseFloat(walk.distance) || 0;
+                const walkDate = new Date(walk.date);
+                const dayOfYear = Math.ceil((walkDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+                dataPoints.push({ x: dayOfYear, y: cumulativeForTrend });
+            });
+            
+            // Calculate linear regression (y = mx + b)
+            const n = dataPoints.length;
+            const sumX = dataPoints.reduce((sum, point) => sum + point.x, 0);
+            const sumY = dataPoints.reduce((sum, point) => sum + point.y, 0);
+            const sumXY = dataPoints.reduce((sum, point) => sum + (point.x * point.y), 0);
+            const sumXX = dataPoints.reduce((sum, point) => sum + (point.x * point.x), 0);
+            
+            const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            const intercept = (sumY - slope * sumX) / n;
+            
+            // Generate trend line for full year
+            for (let dayOfYear = 1; dayOfYear <= totalDaysInYear; dayOfYear++) {
+                const trendValue = slope * dayOfYear + intercept;
+                trendLineData.push(Math.max(0, trendValue)); // Ensure non-negative values
             }
+            
+            cumulativeChart.data.datasets[2].data = trendLineData;
         } else {
             cumulativeChart.data.datasets[2].data = [];
         }

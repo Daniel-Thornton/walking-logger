@@ -41,7 +41,8 @@ ul {
     font-size: 28px;
     color: #ffffff;
     margin-right: 8px;
-    transform: translate(0px, 2px);
+    transform: scale(1.6) translate(5px, -4px);
+    image-rendering: pixelated;
 }
 
 .app-title {
@@ -50,7 +51,7 @@ ul {
     font-size: 16px;
     font-weight: bold;
     flex: 1;
-    transform: translateX(5px);
+    transform: translateX(7px);
 }
 
 .user-controls {
@@ -577,6 +578,13 @@ ul {
     margin-bottom: 8px;
 }
 
+.stat-icon-walk {
+    font-size: 20px;
+    transform: scale(1.5);
+    image-rendering: pixelated;
+    margin-bottom: 15px;
+}
+
 .stat-value {
     font-size: 24px;
     font-weight: bold;
@@ -590,6 +598,96 @@ ul {
     color: #000;
     font-family: 'MS Sans Serif', sans-serif;
     text-transform: uppercase;
+}
+
+/* Goal Section */
+.goal-section {
+    margin-bottom: 20px;
+}
+
+.goal-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.goal-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.goal-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.goal-stat-top {
+    display: inline flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.goal-label {
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+}
+
+.goal-value {
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #0000ff;
+}
+
+.goal-progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #fff;
+    border: 2px inset #c0c0c0;
+    position: relative;
+    overflow: hidden;
+}
+
+.goal-progress-fill {
+    height: 100%;
+    background: #ff0000;
+
+    background: url('images/dither.png'), linear-gradient(90deg, #008000 0%, #02b302 100%);
+    background-blend-mode: multiply;
+    filter: brightness(1.1) contrast(0.8) saturate(1.5);
+
+    transition: width 0.3s ease;
+    border-right: 1px solid #808080;
+}
+
+.goal-percentage {
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.goal-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #808080;
+}
+
+.goal-controls .form-group {
+    margin-bottom: 0;
+}
+
+.goal-controls .btn {
+    align-self: flex-start;
+    min-width: 120px;
 }
 
 /* Scrollbars - Windows 95 Style with Highlights and Shadows */
@@ -1229,6 +1327,13 @@ ul {
     
     .stat-icon {
         font-size: 20px;
+    }
+
+    .stat-icon-walk {
+        font-size: 20px;
+        transform: scale(1.5);
+        image-rendering: pixelated;
+        margin-bottom: 15px;
     }
     
     .charts-grid {
