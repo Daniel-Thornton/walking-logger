@@ -1197,6 +1197,12 @@ function updateStatistics() {
         `;
         return;
         }
+        else {
+            bannerCurrentStreakIconEl.innerHTML = `
+            <div class="streak-icon" id="bannerStreakIcon"><img src="images/icons/streak_fire.png" alt="" class="icon"></div>
+        `;
+        return;
+        }
     }
 
     
@@ -2720,3 +2726,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
