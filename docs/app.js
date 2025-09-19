@@ -38,6 +38,7 @@ const csvFileInput = document.getElementById('csvFileInput');
 const toast = document.getElementById('toast');
 const toastMessage = document.getElementById('toastMessage');
 const loadingSpinner = document.getElementById('loadingSpinner');
+const goalIconEl = document.getElementById('goalIcon');
 
 // Banner streak counter element
 const bannerCurrentStreakEl = document.getElementById('bannerCurrentStreak');
@@ -1129,28 +1130,44 @@ function updateGoalProgress() {
     const goalPercentageEl = document.getElementById('goalPercentage');
     const goalProgressFillBanEl = document.getElementById('goalProgressFillBan');
     const goalPercentageBanEl = document.getElementById('goalPercentageBan');
+    const goalLabelEl = document.getElementById('goalLabel');
     
     if (yearProgressEl && goalProgressFillEl && goalPercentageEl) {
+        const myPercentage = Math.min((yearProgress / yearlyGoal) * 100);
         if (yearlyGoal > 0) {
             const percentage = Math.min((yearProgress / yearlyGoal) * 100, 100);
             yearProgressEl.textContent = `${yearProgress.toFixed(2)} / ${yearlyGoal}`;
             goalProgressFillEl.style.width = `${percentage}%`;
             goalPercentageEl.textContent = `${percentage.toFixed(1)}%`;
-            
-            // Change color based on progress
-            //if (percentage >= 100) {
-            //    goalProgressFillEl.style.backgroundColor = '#008000'; // Green
-            //} else if (percentage >= 75) {
-            //    goalProgressFillEl.style.backgroundColor = '#808000'; // Yellow-green
-            //} else if (percentage >= 50) {
-            //    goalProgressFillEl.style.backgroundColor = '#ffff00'; // Yellow
-            //} else {
-            //    goalProgressFillEl.style.backgroundColor = '#ff0000'; // Red
-            //}
-        } else {
+            goalIconEl.innerHTML = `
+            <img src="images/icons/target_32.png" alt="" class="icon">
+            `;
+            goalLabelEl.innerHTML =`
+            Year Goal Progress:
+            `;
+        }
+        if (yearlyGoal === 0) {
             yearProgressEl.textContent = `${yearProgress.toFixed(2)} / No Goal Set`;
             goalProgressFillEl.style.width = '0%';
             goalPercentageEl.textContent = '0%';
+            goalIconEl.innerHTML = `
+            <img src="images/icons/target_32.png" alt="" class="icon">
+            `;
+            goalLabelEl.innerHTML =`
+            Set a goal
+            `;
+        }
+        if (myPercentage > 100) {
+            const percentage = Math.min((yearProgress / yearlyGoal) * 100, 100);
+            yearProgressEl.textContent = `${yearProgress.toFixed(2)} / ${yearlyGoal}`;
+            goalProgressFillEl.style.width = `${percentage}%`;
+            goalPercentageEl.textContent = `${percentage.toFixed(1)}%`;
+            goalIconEl.innerHTML = `
+            <img src="images/icons/party.png" alt="" class="icon">
+            `;
+            goalLabelEl.innerHTML =`
+            CONGRATULATIONS!!!
+            `;
         }
     }
     if (goalProgressFillBanEl && goalPercentageBanEl) {

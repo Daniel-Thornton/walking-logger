@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="goal-stat">
-                <div class="goal-label">Distance Goal Progress:</div>
+                <div class="goal-label" id="goalLabel2">Year Goal Progress:</div>
                 <div class="goal-progress-bar">
                     <div class="goal-progress-fill" id="goalProgressFillBan" style="width: 0%"></div>
                 </div>
@@ -76,8 +76,9 @@
             <div id="authModal" class="modal">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <img src="images/icons/keys-3.png" alt="" class="icon">
                         <h2 id="authTitle">Login to Sync Data</h2>
-                        <button class="modal-close" id="closeAuthModal">&times;</button>
+                        <button class="modal-close" id="closeAuthModal"><img src="images/icons/close.png" alt="&times;"></button>
                     </div>
                     <div class="modal-body">
                         <form id="authForm">
@@ -87,7 +88,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="password">Password:</label>
-                                <input type="password" id="password" name="password" autocomplete="password" required>
+                                <input type="password" id="password" name="password" autocomplete="current-password" required>
                             </div>
                             <div class="auth-buttons">
                                 <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Login</button>
@@ -174,9 +175,9 @@
                         <div class="goal-container">
                             <div class="goal-stats">
                                 <div class="goal-stat-top">
-                                    <div class="stat-icon"><img src="images/icons/target_32.png" alt="" class="icon"></div>
+                                    <div class="stat-icon" id="goalIcon"><img src="images/icons/target_32.png" alt="" class="icon"></div>
                                     <div class="goal-stat">
-                                        <div class="goal-label">Current Year Progress:</div>
+                                        <div class="goal-label" id="goalLabel">Current Year Progress:</div>
                                         <div class="goal-value" id="yearProgress">0 / 0</div>
                                     </div>
                                 </div>
