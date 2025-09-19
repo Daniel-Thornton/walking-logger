@@ -777,7 +777,8 @@ async function handleAuthSubmit(e) {
     } catch (error) {
         showToast('Network error. Please try again.', 'error');
     }
-    
+
+    setChar();
     showLoading(false);
 }
 
