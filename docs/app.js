@@ -68,6 +68,7 @@ const tabContents = document.querySelectorAll('.tab-content');
 // Statistics elements
 const totalWalksEl = document.getElementById('totalWalks');
 const totalDistanceEl = document.getElementById('totalDistance');
+const totalDistanceBanEl = document.getElementById('totalDistanceBan');
 const currentStreakEl = document.getElementById('currentStreak');
 const longestStreakEl = document.getElementById('longestStreak');
 const weekComparisonEl = document.getElementById('weekComparison');
@@ -1196,6 +1197,10 @@ function updateStatistics() {
         const distance = parseFloat(walk.distance) || 0;
         return sum + distance;
     }, 0);
+    const totalDistanceBan = walkData.reduce((sum, walk) => {
+        const distance = parseFloat(walk.distance) || 0;
+        return sum + distance;
+    }, 0);
     
     // Calculate streaks
     const streaks = calculateStreaks();
@@ -1206,6 +1211,7 @@ function updateStatistics() {
     // Animate the numbers
     animateNumber(totalWalksEl, totalWalks);
     animateNumber(totalDistanceEl, parseFloat(totalDistance.toFixed(2)));
+    animateNumber(totalDistanceBanEl, parseFloat(totalDistance.toFixed(2)));
     
     // Update streak displays if elements exist
     if (currentStreakEl) {
@@ -1423,6 +1429,9 @@ function animateNumber(element, targetValue) {
         } else {
             element.textContent = Math.round(current);
         }
+        if (element.id === 'totalDistanceBan') {
+            element.textContent = current.toFixed(2);
+        }
     }, 50);
 }
 
@@ -1463,7 +1472,7 @@ function updateRecentWalks() {
                         </div>
                         <div class="walk-stat">
                             <span>🏃‍♂️</span>
-                            <span>${calculatePace(timeElapsed, distance)} min/dist</span>
+                            <span>${calculatePace(timeElapsed, distance)} min/mile</span>
                         </div>
                     </div>
                 </div>
@@ -1826,7 +1835,7 @@ function initializeCharts() {
         data: {
             labels: [],
             datasets: [{
-                label: 'Pace (min/distance)',
+                label: 'Pace (min/mile)',
                 data: [],
                 borderColor: '#008080',
                 backgroundColor: '#c0c0c0',
@@ -1894,7 +1903,7 @@ function initializeCharts() {
                     },
                     title: {
                         display: true,
-                        text: 'Pace (min/distance)',
+                        text: 'Pace (min/mile)',
                         color: '#000000',
                         font: {
                             family: 'MS Sans Serif, sans-serif',
@@ -2171,7 +2180,7 @@ function updateMovingAveragesChart() {
     movingAveragesChart.data.datasets[2].data = ma30.map(point => point.value.toFixed(2));
     
     // Update y-axis title based on current view
-    const yAxisTitle = currentMovingAverageView === 'distance' ? 'Distance' : 'Pace (min/distance)';
+    const yAxisTitle = currentMovingAverageView === 'distance' ? 'Distance' : 'Pace (min/mile)';
     movingAveragesChart.options.scales.y.title = {
         display: true,
         text: yAxisTitle
@@ -2492,8 +2501,8 @@ function updateLeaderboard() {
             : calculatePace(timeElapsed, distance);
         
         const detailsText = currentLeaderboardView === 'distance'
-            ? `${timeElapsed} min • ${calculatePace(timeElapsed, distance)} min/dist pace`
-            : `${distance.toFixed(2)} distance • ${timeElapsed} min`;
+            ? `${timeElapsed} min • ${calculatePace(timeElapsed, distance)} min/mile pace`
+            : `${distance.toFixed(2)} miles • ${timeElapsed} min`;
         
         return `
             <div class="leaderboard-item ${rankClass}">
@@ -2507,7 +2516,7 @@ function updateLeaderboard() {
                         ${detailsText}
                     </div>
                 </div>
-                <div class="leaderboard-distance">${displayValue}${currentLeaderboardView === 'pace' ? ' min/dist' : ''}</div>
+                <div class="leaderboard-distance">${displayValue}${currentLeaderboardView === 'pace' ? ' min/mile' : ''}</div>
             </div>
         `;
     }).join('');
