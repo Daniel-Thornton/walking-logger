@@ -1232,7 +1232,7 @@ function updateStatistics() {
         }
         else {
             bannerCurrentStreakIconEl.innerHTML = `
-            <div class="streak-icon" id="bannerStreakIcon"><img src="images/icons/streak_fire.png" alt="" class="icon"></div>
+            <div class="streak-icon" id="bannerStreakIcon"><img src="images/icons/streak_fire.gif" alt="" class="icon"></div>
         `;
         return;
         }
