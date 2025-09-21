@@ -260,6 +260,32 @@
                 <section class="charts-section">
                     <div class="charts-grid">
                         <div class="card chart-card">
+                            <h3>Cumulative Distance Progress</h3>
+                            <canvas id="cumulativeChart"></canvas>
+                        </div>
+
+                        <div class="card chart-card">
+                            <h3>Earth Circumference Progress</h3>
+                            <div class="world-chart">
+                                <img src="images/icons/world-1.png" alt="World" class="worldIMG">
+                                <div class="earth-progress-container">
+                                    <div class="earth-stat">
+                                        <div class="earth-stat-value" id="earthProgressDistance">0.0</div>
+                                        <div class="earth-stat-label">miles walked</div>
+                                    </div>
+                                    <div class="earth-progress-bar">
+                                        <div class="earth-progress-fill" id="earthProgressFill" style="width: 0%"></div>
+                                    </div>
+                                    <div class="earth-progress-info">
+                                        <div class="earth-percentage" id="earthPercentage">0%</div>
+                                        <div class="earth-remaining" id="earthRemaining">24,901 miles to go</div>
+                                    </div>
+                                    <div class="earth-circumference">Earth's circumference: 24,901 miles</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card chart-card">
                             <h3>Distance Over Time</h3>
                             <canvas id="distanceChart"></canvas>
                         </div>
@@ -267,11 +293,6 @@
                         <div class="card chart-card">
                             <h3>Time vs Distance</h3>
                             <canvas id="timeDistanceChart"></canvas>
-                        </div>
-                        
-                        <div class="card chart-card">
-                            <h3>Cumulative Distance Progress</h3>
-                            <canvas id="cumulativeChart"></canvas>
                         </div>
                         
                         <div class="card chart-card">

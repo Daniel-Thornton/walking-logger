@@ -877,6 +877,12 @@ function switchTab(tabName) {
     if (tabName === 'visualizations') {
         setTimeout(() => {
             updateCharts();
+            // Also update Earth progress when switching to charts tab
+            const totalDistance = walkData.reduce((sum, walk) => {
+                const distance = parseFloat(walk.distance) || 0;
+                return sum + distance;
+            }, 0);
+            updateEarthProgress(totalDistance);
         }, 100);
     }
     
@@ -1238,6 +1244,8 @@ function updateStatistics() {
         }
     }
 
+    // Update Earth circumference progress
+    updateEarthProgress(totalDistance);
     
     // Update weekly comparison if elements exist
     updateWeeklyComparison(weeklyComparison);
@@ -1408,6 +1416,49 @@ function updateWeeklyComparison(comparison) {
             </div>
         </div>
     `;
+}
+
+// Update Earth circumference progress
+function updateEarthProgress(totalDistance) {
+    const EARTH_CIRCUMFERENCE = 24901; // miles
+    
+    // Get DOM elements
+    const earthProgressDistanceEl = document.getElementById('earthProgressDistance');
+    const earthProgressFillEl = document.getElementById('earthProgressFill');
+    const earthPercentageEl = document.getElementById('earthPercentage');
+    const earthRemainingEl = document.getElementById('earthRemaining');
+    
+    // Check if elements exist (they might not be visible if not on charts tab)
+    if (!earthProgressDistanceEl || !earthProgressFillEl || !earthPercentageEl || !earthRemainingEl) {
+        return;
+    }
+    
+    // Calculate progress
+    const percentage = Math.min((totalDistance / EARTH_CIRCUMFERENCE) * 100, 100);
+    const remaining = Math.max(EARTH_CIRCUMFERENCE - totalDistance, 0);
+    
+    // Update the display elements
+    animateNumber(earthProgressDistanceEl, parseFloat(totalDistance.toFixed(2)));
+    earthProgressFillEl.style.width = `${percentage}%`;
+    earthPercentageEl.textContent = `${percentage.toFixed(2)}%`;
+    
+    // Update remaining distance text
+    if (remaining > 0) {
+        earthRemainingEl.textContent = `${remaining.toFixed(2)} miles to go`;
+    } else {
+        earthRemainingEl.textContent = `🎉 You've walked around Earth!`;
+    }
+    
+    // Add special styling if completed
+    if (percentage >= 100) {
+        earthProgressFillEl.style.background = 'linear-gradient(90deg, #00ff00, #ffff00, #00ff00)';
+        earthPercentageEl.style.color = '#008000';
+        earthPercentageEl.style.fontWeight = 'bold';
+    } else {
+        earthProgressFillEl.style.background = '';
+        earthPercentageEl.style.color = '';
+        earthPercentageEl.style.fontWeight = '';
+    }
 }
 
 // Animate number changes (same as original)
@@ -2762,4 +2813,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
