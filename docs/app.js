@@ -1514,15 +1514,13 @@ function updateRecentWalks() {
                     <div class="walk-date">${formatDate(walk.date)}</div>
                     <div class="walk-stats">
                         <div class="walk-stat">
-                            <span>📏</span>
+                            <span><img src="images/icons/walk_black_16.png" alt="📏" class="icon-char"></span>
                             <span>${distance.toFixed(2)}</span>
-                        </div>
-                        <div class="walk-stat">
-                            <span>⏱️</span>
+
+                            <span><img src="images/icons/clock-0.png" alt="⏱️" class="icon-char"></span>
                             <span>${timeElapsed} min</span>
-                        </div>
-                        <div class="walk-stat">
-                            <span>🏃‍♂️</span>
+
+                            <span><img src="images/icons/timer-0.png" alt="🏃‍♂️" class="icon-char"></span>
                             <span>${calculatePace(timeElapsed, distance)} min/mile</span>
                         </div>
                     </div>
@@ -1625,7 +1623,7 @@ function initializeCharts() {
                         color: '#000000',
                         font: {
                             family: 'MS Sans Serif, sans-serif',
-                            size: 10
+                            size: 5
                         }
                     },
                     border: {
@@ -1865,7 +1863,7 @@ function initializeCharts() {
                         color: '#000000',
                         font: {
                             family: 'MS Sans Serif, sans-serif',
-                            size: 10
+                            size: 5
                         }
                     },
                     border: {
@@ -1971,7 +1969,7 @@ function initializeCharts() {
                         color: '#000000',
                         font: {
                             family: 'MS Sans Serif, sans-serif',
-                            size: 10
+                            size: 5
                         }
                     },
                     border: {
@@ -2082,7 +2080,7 @@ function initializeCharts() {
                         color: '#000000',
                         font: {
                             family: 'MS Sans Serif, sans-serif',
-                            size: 10
+                            size: 5
                         }
                     },
                     border: {
@@ -2552,22 +2550,25 @@ function updateLeaderboard() {
             : calculatePace(timeElapsed, distance);
         
         const detailsText = currentLeaderboardView === 'distance'
-            ? `${timeElapsed} min • ${calculatePace(timeElapsed, distance)} min/mile pace`
-            : `${distance.toFixed(2)} miles • ${timeElapsed} min`;
+            ? `${timeElapsed} min • ${calculatePace(timeElapsed, distance)} min/mile`
+            : `${distance.toFixed(2)} mi • ${timeElapsed} min`;
         
         return `
             <div class="leaderboard-item ${rankClass}">
+
                 <div class="leaderboard-rank">
-                    <div class="rank-number">${index + 1}</div>
-                    ${medal ? `<div class="rank-medal">${medal}</div>` : ''}
+                    <div class="rank-number">${index + 1}.</div>
                 </div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-date">${formatDate(walk.date)}</div>
-                    <div class="leaderboard-details">
-                        ${detailsText}
-                    </div>
+                <div class="leaderboard-distance">
+                    ${displayValue}${currentLeaderboardView === 'pace' ? ' min/mile' : ''}
                 </div>
-                <div class="leaderboard-distance">${displayValue}${currentLeaderboardView === 'pace' ? ' min/mile' : ''}</div>
+
+                <div class="leaderboard-details">
+                    ${detailsText}
+                </div>
+
+                <div class="leaderboard-date">${formatDateShort(walk.date)}</div>
+                
             </div>
         `;
     }).join('');
@@ -2581,6 +2582,11 @@ function formatDate(dateString) {
         month: 'short',
         day: 'numeric'
     });
+}
+
+function formatDateShort(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(  "en-GB", { timeZone: "UTC" }  );
 }
 
 function calculatePace(timeElapsed, distance) {

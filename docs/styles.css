@@ -538,6 +538,10 @@ ul {
     min-width: 100px;
 }
 
+.danger {
+    background: #a50404;
+}
+
 [hidden] { 
     display: none !important; 
 }
@@ -546,9 +550,18 @@ ul {
     background: #cfc98d;
 }
 
+.danger:hover {
+    background: #640606;
+}
+
 .btn-bubble:active {
     background: #fff7b3;
 }
+
+.danger:active {
+    background: #7c0303;
+}
+
 
 .delete-all-container {
   display: flex;
@@ -1232,7 +1245,7 @@ ul {
     justify-content: space-between;
     background: #c0c0c0;
     border: 1px outset #c0c0c0;
-    padding: 12px;
+    padding: 15px;
     font-size: 12px;
     gap: 10px;
     cursor: pointer;
@@ -1249,7 +1262,7 @@ ul {
 }
 
 .leaderboard-item.silver {
-    background: #c0c0c0;
+    background: #d3d3d3;
     color: #000;
 }
 
@@ -1262,14 +1275,15 @@ ul {
     display: flex;
     align-items: center;
     gap: 8px;
-    min-width: 60px;
+    min-width: 20px;
     flex-shrink: 0;
+    padding: 4px;
 }
 
 .rank-number {
     font-size: 12px;
     font-weight: bold;
-    min-width: 20px;
+    min-width: 5px;
 }
 
 .rank-medal {
@@ -1279,13 +1293,15 @@ ul {
 .leaderboard-info {
     flex: 1;
     display: flex;
-    flex-direction: column;
+    align-items: right;
+    padding: 10px;
     gap: 4px;
+    
 }
 
 .leaderboard-date {
     font-weight: bold;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .leaderboard-details {
@@ -1295,9 +1311,13 @@ ul {
 .leaderboard-distance {
     font-size: 14px;
     font-weight: bold;
-    min-width: 80px;
-    text-align: right;
+    min-width: 10px;
     flex-shrink: 0;
+    transform: translateX(5px);
+}
+
+.leaderboard-top {
+    display: flex;
 }
 
 /* Toast Notification */
@@ -1495,21 +1515,19 @@ ul {
     }
     
     .leaderboard-item {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
         gap: 8px;
-        padding: 10px;
+        padding: 3px;
     }
     
     .leaderboard-info {
         width: 100%;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: center;
     }
     
     .leaderboard-distance {
-        text-align: left;
-        min-width: auto;
+        left: 0px;
     }
     
     .btn {
