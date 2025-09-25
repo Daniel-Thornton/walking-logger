@@ -663,6 +663,12 @@ function setupEventListeners() {
     if (deleteAllBtn) {
         deleteAllBtn.addEventListener('click', deleteAllWalks);
     }
+
+    const startButtonEl = document.getElementById('startButton');
+    if (startButtonEl) {
+    startButtonEl.addEventListener('click', toggleStartMenu);
+    }
+
     
     // Authentication event listeners
     loginBtn.addEventListener('click', () => showAuthModal('login'));
@@ -862,6 +868,95 @@ function setupTabs() {
             switchTab(tabName);
         });
     });
+    
+    // Set up start menu item functionality
+    setupStartMenu();
+}
+
+// Setup start menu functionality
+function setupStartMenu() {
+    const startMenuItems = document.querySelectorAll('.start-menu-item');
+    
+    startMenuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const tabName = item.dataset.tab;
+            
+            if (tabName) {
+                // Switch to the specified tab
+                switchTab(tabName);
+            } else {
+                // Handle other menu items
+                const itemText = item.querySelector('span:not(.start-menu-arrow)').textContent;
+                
+                switch (itemText) {
+                    case 'Export Data':
+                        handleExport();
+                        break;
+                    case 'Import Data':
+                        csvFileInput.click();
+                        break;
+                    case 'Set Goal':
+                        // Focus on the goal input
+                        switchTab('log');
+                        setTimeout(() => {
+                            const goalInput = document.getElementById('yearlyGoal');
+                            if (goalInput) {
+                                goalInput.focus();
+                                goalInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }, 100);
+                        break;
+                    case 'Account':
+                        if (isAuthenticated) {
+                            handleLogout();
+                        } else {
+                            showAuthModal('login');
+                        }
+                        break;
+                    case 'Shut Down...':
+                        handleShutdown();
+                        break;
+                }
+            }
+        });
+    });
+}
+
+// Handle shutdown functionality
+async function handleShutdown() {
+    const confirmed = await showConfirmDialog('Shut Down Walking Logger', 'Are you sure you want to shut down the Walking Logger application?');
+    if (confirmed) {
+        // Create a shutdown effect
+        document.body.style.transition = 'opacity 1s ease-out';
+        document.body.style.opacity = '0';
+        
+        setTimeout(() => {
+            // Show a shutdown screen
+            document.body.innerHTML = `
+                <div style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    background: #008080;
+                    color: #fff;
+                    font-family: 'MS Sans Serif', sans-serif;
+                    font-size: 24px;
+                    text-align: center;
+                ">
+                    <div>
+                        <div style="margin-bottom: 20px;">
+                            <img src="images/icons/windows-4.png" alt="Windows" style="width: 64px; height: 64px; image-rendering: pixelated;">
+                        </div>
+                        <div>Walking Logger has shut down successfully.</div>
+                        <div style="font-size: 14px; margin-top: 20px;">
+                            <a href="javascript:location.reload()" style="color: #fff; text-decoration: underline;">Click here to restart</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }, 1000);
+    }
 }
 
 function switchTab(tabName) {
@@ -870,7 +965,8 @@ function switchTab(tabName) {
     tabContents.forEach(content => content.classList.remove('active'));
     
     // Add active class to clicked tab and corresponding content
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    //document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
     document.getElementById(`${tabName}Tab`).classList.add('active');
     
     // Update charts when switching to visualizations tab
@@ -2777,6 +2873,51 @@ function showConfirmDialog(title, message) {
 function hideConfirmDialog() {
     document.getElementById('confirmOverlay').style.display = 'none';
     confirmResolve = null;
+}
+
+function toggleStartMenu2() {
+  const menu = document.getElementById('startMenu');
+  if (!menu) return;
+  menu.classList.toggle('open');
+}
+
+function hideStartMenu() {
+  const menu = document.getElementById('startMenu');
+  if (menu) menu.style.display = 'none';
+}
+
+function toggleStartMenu() {
+  const menu = document.getElementById('startMenu');
+  const btn  = document.getElementById('startButton');
+  if (!menu || !btn) return;
+
+  const isOpen = menu.classList.contains('open');
+
+  if (isOpen) {
+    // Already open → close
+    menu.classList.remove('open');
+    document.removeEventListener('click', handleOutsideClick);
+  } else {
+    // Open menu
+    menu.classList.add('open');
+
+    // Delay attaching the listener so the opening click doesn’t immediately close it
+    setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick);
+    }, 0);
+  }
+}
+
+function handleOutsideClick(e) {
+  const menu = document.getElementById('startMenu');
+  const btn  = document.getElementById('startButton');
+  if (!menu || !btn) return;
+
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    // Clicked outside both menu and button → close
+    menu.classList.remove('open');
+    document.removeEventListener('click', handleOutsideClick);
+  }
 }
 
 // Set up confirmation dialog event listeners

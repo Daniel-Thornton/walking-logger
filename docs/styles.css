@@ -7,7 +7,7 @@
 
 body {
     font-family: 'MS Sans Serif', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #c0c0c0;
+    background: #008080; /* #c0c0c0 */
     min-height: 100vh;
     color: #000;
     overflow-x: hidden;
@@ -29,12 +29,55 @@ ul {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+.app-footer {
+    background: #c0c0c0;
+    background-blend-mode: multiply;
+    filter: brightness(1.1) contrast(0.8) saturate(1.5);
+    padding: 2px;
+    position: sticky;
+    bottom: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border: 2px outset #c0c0c0;
+}
+
 .header-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.footer-content {
+    display: flex;
+}
+
+.footer-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-start {
+    background: #c0c0c0;
+    border: 3px outset #c0c0c0;
+    color: #000;
+    padding: 0px 0px;
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 65px;
+    min-height: 25px;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 0;
+}
+
+.start-icon {
+    transform: translate(0px,0px);
 }
 
 .app-icon {
@@ -58,6 +101,8 @@ ul {
     display: flex;
     gap: 8px;
 }
+
+
 
 /* Container */
 .container {
@@ -179,7 +224,7 @@ ul {
 }
 
 .tab-content::-webkit-scrollbar-track {
-    background: #c0c0c0;
+    background: #008080; /* #c0c0c0 */
     border: 2px inset #c0c0c0;
     box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
 }
@@ -363,17 +408,20 @@ ul {
 
 .tab-btn {
     background: #c0c0c0;
-    border: 2px outset #c0c0c0;
+    border: 3px outset #c0c0c0;
     color: #000;
-    padding: 8px 16px;
-    margin-right: 2px;
-    cursor: pointer;
+    padding: 0px 3px;
     font-family: 'MS Sans Serif', sans-serif;
     font-size: 12px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    min-width: 80px;
-    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 65px;
+    min-height: 40px;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 0;
 }
 
 .tab-btn:hover {
@@ -389,7 +437,7 @@ ul {
 /* Tab Content */
 .tab-content {
     display: none;
-    background: #c0c0c0;
+    background: #008080; /* #c0c0c0 */
     /*border: 2px outset #c0c0c0;*/
     padding: 15px;
     min-height: 400px;
@@ -1107,6 +1155,8 @@ ul {
     color: #fff;
 }
 
+
+
 /* Windows 98 Style Confirmation Dialog */
 .confirm-overlay {
     display: none;
@@ -1404,7 +1454,7 @@ ul {
 
 /* Window-like title bars */
 .window-title {
-    background: url('images/dither.png'), linear-gradient(90deg, #0000ff 0%, #000080 100%);
+    background: url('images/dither.png'), linear-gradient(90deg, #000080 0%, #0000ff 100%);
     background-blend-mode: multiply;
     filter: brightness(1.1) contrast(0.8) saturate(1.5);
     color: #fff;
@@ -1414,6 +1464,141 @@ ul {
     font-weight: bold;
     margin: -8px -8px 8px -8px;
     border-bottom: 1px solid #000;
+}
+
+.start-title {
+    background: url('images/dither.png'), linear-gradient(90deg, #000080 0%, #0000ff 100%);
+    background-blend-mode: multiply;
+    filter: brightness(1.1) contrast(0.8) saturate(1.5);
+    color: #fff;
+    padding: 6px 10px;
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin: -8px -8px 8px -8px;
+    border-bottom: 1px solid #000;
+    /*transform: rotate(0.75turn); */
+}
+
+/* Windows 98 Start Menu Styles */
+.start-card {
+    background: transparent;
+    border: none;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 450px;
+    position: sticky;
+    top: 40px;
+}
+
+.start-menu {
+    display: none;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    min-height: 400px;
+    max-width: 250px;
+    margin: 0 auto;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    position: sticky;
+    bottom: 50px;
+    z-index: 1001;
+}
+
+.start-menu.open {
+    display: flex;
+    left: 10px;
+}
+
+.start-menu-sidebar {
+    width: 25px;
+    background: url('images/dither.png'), linear-gradient(180deg, #000080 0%, #0000ff 100%);
+    background-blend-mode: multiply;
+    filter: brightness(1.1) contrast(0.8) saturate(1.5);
+    display: flex;
+    align-items: flex-end;
+    padding: 10px 5px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.start-menu-logo {
+    color: #fff;
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+    transform: rotate(180deg);
+}
+
+.start-menu-text {
+    line-height: 1.2;
+}
+
+.start-menu-items {
+    flex: 1;
+    padding: 2px;
+    background: #c0c0c0;
+}
+
+.start-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 11px;
+    color: #000;
+    cursor: pointer;
+    position: relative;
+    min-height: 24px;
+    gap: 8px;
+}
+
+.start-menu-item:hover {
+    background: #0000ff;
+    color: #fff;
+}
+
+.start-menu-item:hover .start-menu-arrow {
+    color: #fff;
+}
+
+.start-menu-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+}
+
+.start-menu-item span:not(.start-menu-arrow) {
+    flex: 1;
+}
+
+.start-menu-arrow {
+    font-size: 8px;
+    color: #000;
+    margin-left: auto;
+}
+
+.start-menu-separator {
+    height: 1px;
+    background: #808080;
+    margin: 2px 8px;
+    border-bottom: 1px solid #fff;
+}
+
+.start-menu-shutdown {
+    margin-top: auto;
+    border-top: 1px solid #808080;
+    padding-top: 6px;
+    margin-top: 4px;
+}
+
+.start-menu-shutdown:hover {
+    background: #ff0000;
+    color: #fff;
 }
 
 /* Mobile Responsive Design */
@@ -1440,17 +1625,16 @@ ul {
         margin-bottom: 10px;
     }
     
-    .tab-btn {
-        padding: 10px 12px;
-        font-size: 11px;
-        min-width: 70px;
-    }
-    
     .tab-content {
         padding: 10px;
     }
     
     .card {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .start-card {
         padding: 10px;
         margin-bottom: 10px;
     }

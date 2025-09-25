@@ -63,46 +63,38 @@
             </div>
         </header>
 
-        <!-- Tab Navigation -->
-        <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="log"><img src="images/icons/registration-1.png" alt="" class="icon"> Log Walk</button>
-            <button class="tab-btn" data-tab="visualizations"><img src="images/icons/chart1-1.png" alt="" class="icon"> Charts</button>
-            <button class="tab-btn" data-tab="leaderboard"><img src="images/icons/certificate-1.png" alt="" class="icon"> Leaderboard</button>
-            <button class="tab-btn" data-tab="help"><img src="images/icons/help_book_big-1.png" alt="" class="icon"> Help</button>
-        </nav>
-
-        <main class="main-content">
-            <!-- Login/Registration Modal -->
-            <div id="authModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <img src="images/icons/keys-3.png" alt="" class="icon">
-                        <h2 id="authTitle">Login to Sync Data</h2>
-                        <button class="modal-close" id="closeAuthModal"><img src="images/icons/close.png" alt="&times;"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="authForm">
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" id="email" name="email" autocomplete="email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="password" id="password" name="password" autocomplete="current-password" required>
-                            </div>
-                            <div class="auth-buttons">
-                                <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Login</button>
-                                <button type="button" class="btn btn-secondary" id="registerBtn">Register</button>
-                            </div>
-                        </form>
-                        <div class="auth-toggle">
-                            <p>Don't have an account? <a href="#" id="showRegister">Register here</a></p>
-                            <p id="showLogin" style="display: none;">Already have an account? <a href="#">Login here</a></p>
+        <!-- Login/Registration Modal -->
+        <div id="authModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img src="images/icons/keys-3.png" alt="" class="icon">
+                    <h2 id="authTitle">Login to Sync Data</h2>
+                    <button class="modal-close" id="closeAuthModal"><img src="images/icons/close.png" alt="&times;"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="authForm">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" autocomplete="email" required>
                         </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" autocomplete="current-password" required>
+                        </div>
+                        <div class="auth-buttons">
+                            <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Login</button>
+                            <button type="button" class="btn btn-secondary" id="registerBtn">Register</button>
+                        </div>
+                    </form>
+                    <div class="auth-toggle">
+                        <p>Don't have an account? <a href="#" id="showRegister">Register here</a></p>
+                        <p id="showLogin" style="display: none;">Already have an account? <a href="#">Login here</a></p>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <main class="main-content">
             <!-- Sync Status -->
             <div id="syncStatus" class="sync-status">
                 <span id="syncText">Working offline</span>
@@ -204,14 +196,6 @@
                         </div>
                     </div>
                 </section>
-
-                <!-- Weekly Comparison Section -->
-                <!--<section class="weekly-comparison-section">
-                    <div class="card">
-                        <div class="window-title">📊 This Week vs Last Week</div>
-                        <div id="weekComparison" class="week-comparison-container"></div>
-                    </div>
-                </section> -->
 
                 <!-- Recent Walks Section -->
                 <section class="recent-section">
@@ -390,6 +374,76 @@
         </div>
     </div>
 
+
+    <div id="startMenu" class="start-menu">
+        <div class="start-menu-sidebar">
+            <div class="start-menu-logo">
+                <span class="start-menu-text">Windows98</span>
+            </div>
+        </div>
+        <div class="start-menu-items">
+            <div class="start-menu-item" data-tab="log">
+                <img src="images/icons/registration-1.png" alt="" class="start-menu-icon">
+                <span>Log Walk</span>
+                <span class="start-menu-arrow">▶</span>
+            </div>
+            <div class="start-menu-item" data-tab="visualizations">
+                <img src="images/icons/chart1-1.png" alt="" class="start-menu-icon">
+                <span>Charts</span>
+                <span class="start-menu-arrow">▶</span>
+            </div>
+            <div class="start-menu-item" data-tab="leaderboard">
+                <img src="images/icons/certificate-1.png" alt="" class="start-menu-icon">
+                <span>Leaderboard</span>
+                <span class="start-menu-arrow">▶</span>
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item">
+                <img src="images/icons/floppy_disk_16.png" alt="" class="start-menu-icon">
+                <span>Export Data</span>
+            </div>
+            <div class="start-menu-item">
+                <img src="images/icons/directory_explorer-1.png" alt="" class="start-menu-icon">
+                <span>Import Data</span>
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item">
+                <img src="images/icons/target_16.png" alt="" class="start-menu-icon">
+                <span>Set Goal</span>
+            </div>
+            <div class="start-menu-item">
+                <img src="images/icons/users_key-1.png" alt="" class="start-menu-icon">
+                <span>Account</span>
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item" data-tab="help">
+                <img src="images/icons/help_book_big-1.png" alt="" class="start-menu-icon">
+                <span>Help</span>
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item start-menu-shutdown">
+                <img src="images/icons/no2-0.png" alt="" class="start-menu-icon">
+                <span>Shut Down...</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="app-footer">
+        <div class="footer-content">
+            <div class="footer-controls">
+                <button id="startButton" class="btn-start"><img src="images/icons/windows-4.png" alt="" class="start-icon"> Start</button>
+            </div>
+            <img src="images/icons/splitter.png" alt="" class="start-icon">
+            <!-- Tab Navigation -->
+            <button class="tab-btn active" data-tab="log"><img src="images/icons/registration-1.png" alt="" class="icon"> Log Walk</button>
+            <button class="tab-btn" data-tab="visualizations"><img src="images/icons/chart1-1.png" alt="" class="icon"> Charts</button>
+            <button class="tab-btn" data-tab="leaderboard"><img src="images/icons/certificate-1.png" alt="" class="icon"> Board</button>
+            <button class="tab-btn" data-tab="help"><img src="images/icons/help_book_big-1.png" alt="" class="icon"> Help</button>
+        </div>
+    </div>
+    
     <script src="app.js"></script>
+
 </body>
 </html>
