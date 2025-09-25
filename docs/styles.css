@@ -503,7 +503,7 @@ ul {
     font-size: 12px;
     background: #fff;
     color: #000;
-    min-height: 44px; /* Touch-friendly */
+    min-height: 44px;
 }
 
 .form-group input:focus,
@@ -525,7 +525,7 @@ ul {
     align-items: center;
     gap: 6px;
     min-width: 100px;
-    min-height: 44px; /* Touch-friendly */
+    min-height: 44px;
     justify-content: center;
     text-decoration: none;
     border-radius: 0;
