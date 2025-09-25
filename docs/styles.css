@@ -21,7 +21,7 @@ ul {
 .app-header {
     background: url('images/dither.png'), linear-gradient(90deg, #0000ff 0%, #000080 100%);
     background-blend-mode: multiply;
-    filter: brightness(1.1) contrast(0.8) saturate(1.5);
+    filter: brightness(0.9) contrast(1.5) saturate(1.5);
     padding: 10px;
     position: sticky;
     top: 0;
@@ -76,6 +76,12 @@ ul {
     border-radius: 0;
 }
 
+.btn-start:active {
+    background: #a0a0a0;
+    border: 2px inset #c0c0c0;
+    box-shadow: inset -1px -1px 0px #dfdfdf, inset 1px 1px 0px #808080;
+}
+
 .start-icon {
     transform: translate(0px,0px);
 }
@@ -119,6 +125,7 @@ ul {
     background: #c0c0c0;
     border: 2px outset #c0c0c0;
     padding: 10px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .banner-container {
@@ -369,7 +376,7 @@ ul {
 
 /* Sync Status */
 .sync-status {
-    background: #ffff80;
+    background: #FFF7B3;
     border: 1px solid #808080;
     padding: 5px 10px;
     margin-bottom: 10px;
@@ -378,6 +385,7 @@ ul {
     align-items: center;
     gap: 8px;
     border-radius: 0;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .sync-status.online {
@@ -453,6 +461,7 @@ ul {
     border: 2px outset #c0c0c0;
     padding: 15px;
     margin-bottom: 15px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .card h2, .card h3 {
@@ -532,13 +541,17 @@ ul {
 }
 
 .btn-primary {
+    background: url('images/dither.png'), linear-gradient(90deg, #000080 0%, #000091 100%);
+    background-blend-mode: multiply;
+    filter: brightness(0.9) contrast(1.5) saturate(1.5);
+
     font-weight: bold;
-    background: #0000ff;
+    /*background: #000080;*/
     color: #fff;
 }
 
 .btn-primary:hover {
-    background: #0000cc;
+    background: #000091;
 }
 
 .btn-secondary {
@@ -653,13 +666,20 @@ ul {
 
 .stat-card {
     background: #c0c0c0;
-    border: 2px inset #c0c0c0;
+    border: 2px outset #c0c0c0;
     padding: 15px;
     text-align: center;
     min-height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.stat-card-dots {
+    border: 2px dotted #696969;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .stat-icon {
@@ -923,7 +943,7 @@ ul {
 .chart-card {
     min-height: 350px;
     background: #c0c0c0;
-    border: 2px inset #c0c0c0;
+    border: 2px outset #c0c0c0;
     padding: 15px;
 }
 
@@ -1051,7 +1071,11 @@ ul {
 }
 
 .chart-toggle.active {
-    background: #0000ff;
+    background: url('images/dither.png'), linear-gradient(90deg, #000080 0%, #000091 100%);
+    background-blend-mode: multiply;
+    filter: brightness(0.9) contrast(1.5) saturate(1.5);
+    font-weight: bold;
+    /*background: #000080;*/
     color: #fff;
     border: 2px inset #c0c0c0;
 }
@@ -1274,7 +1298,11 @@ ul {
 }
 
 .leaderboard-toggle.active {
-    background: #0000ff;
+    background: url('images/dither.png'), linear-gradient(90deg, #000080 0%, #000091 100%);
+    background-blend-mode: multiply;
+    filter: brightness(0.9) contrast(1.5) saturate(1.5);
+    font-weight: bold;
+    /*background: #000080;*/
     color: #fff;
     border: 2px inset #c0c0c0;
 }
@@ -1454,9 +1482,9 @@ ul {
 
 /* Window-like title bars */
 .window-title {
-    background: url('images/dither.png'), linear-gradient(90deg, #000080 0%, #0000ff 100%);
+    background: url('images/dither.png'), linear-gradient(90deg, #000080 30%, #0000ff 100%);
     background-blend-mode: multiply;
-    filter: brightness(1.1) contrast(0.8) saturate(1.5);
+    filter: brightness(0.9) contrast(1.5) saturate(1.5);
     color: #fff;
     padding: 6px 10px;
     font-family: 'MS Sans Serif', sans-serif;
@@ -1481,29 +1509,17 @@ ul {
 }
 
 /* Windows 98 Start Menu Styles */
-.start-card {
-    background: transparent;
-    border: none;
-    padding: 20px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 450px;
-    position: sticky;
-    top: 40px;
-}
-
 .start-menu {
     display: none;
     background: #c0c0c0;
     border: 2px outset #c0c0c0;
     min-height: 400px;
-    max-width: 250px;
+    min-width: 250px;
     margin: 0 auto;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     position: sticky;
     bottom: 50px;
+    left: 0px;
     z-index: 1001;
 }
 
@@ -1513,10 +1529,11 @@ ul {
 }
 
 .start-menu-sidebar {
-    width: 25px;
-    background: url('images/dither.png'), linear-gradient(180deg, #000080 0%, #0000ff 100%);
+    width: 35px;
+    background: url('images/dither.png'), linear-gradient(180deg, #000080 0%, #000091 100%);
     background-blend-mode: multiply;
-    filter: brightness(1.1) contrast(0.8) saturate(1.5);
+    filter: brightness(1.0) contrast(1.6) saturate(1.5);
+
     display: flex;
     align-items: flex-end;
     padding: 10px 5px;
@@ -1527,14 +1544,14 @@ ul {
 .start-menu-logo {
     color: #fff;
     font-family: 'MS Sans Serif', sans-serif;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 20px;
     text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
     transform: rotate(180deg);
 }
 
 .start-menu-text {
     line-height: 1.2;
+    font-size: 14px;
 }
 
 .start-menu-items {
@@ -1548,11 +1565,11 @@ ul {
     align-items: center;
     padding: 4px 8px;
     font-family: 'MS Sans Serif', sans-serif;
-    font-size: 11px;
+    font-size: 14px;
     color: #000;
     cursor: pointer;
     position: relative;
-    min-height: 24px;
+    min-height: 34px;
     gap: 8px;
 }
 
@@ -1788,7 +1805,7 @@ ul {
     }
     
     .btn-primary:hover {
-        background: #0000ff;
+        background: #000091;
     }
     
     .tab-btn:hover {

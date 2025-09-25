@@ -840,10 +840,10 @@ function updateDocumentTitle() {
     const baseTitle = 'Walk Logger';
     if (isAuthenticated && currentUser && currentUser.email) {
         //document.title = `${baseTitle} - ${currentUser.email}`;
-        appTitleEl.textContent = `Walk Logger - ${currentUser.email}`;
+        appTitleEl.textContent = `Walker98 - ${currentUser.email}`;
     } else {
         //document.title = baseTitle;
-        appTitleEl.textContent = 'Walk Logger';
+        appTitleEl.textContent = 'Walker98';
     }
 }
 

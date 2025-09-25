@@ -19,7 +19,7 @@
     <div class="app-header">
         <div class="header-content">
             <div class="app-icon"><img src="images/icons/walk_col_16.png" alt="" class="icon"></div>
-            <div class="app-title">Walk Logger</div>
+            <div class="app-title">Walker98</div>
             <div class="user-controls">
                 <button class="btn btn-login" id="loginBtn"><img src="images/icons/users_key-1.png" alt="" class="icon"> Login</button>
                 <button class="btn btn-login" id="logoutBtn" style="display: none;"><img src="images/icons/padlock.png" alt="" class="icon"> Logout</button>
@@ -135,27 +135,35 @@
                 <section class="stats-section">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon-walk"><img src="images/icons/walk_col_16.png" alt="" class="icon"></div>
-                            <div class="stat-value" id="totalWalks">0</div>
-                            <div class="stat-label">Total Walks</div>
+                            <div class="stat-card-dots">
+                                <div class="stat-icon-walk"><img src="images/icons/walk_col_16.png" alt="" class="icon"></div>
+                                <div class="stat-value" id="totalWalks">0</div>
+                                <div class="stat-label">Total Walks</div>
+                            </div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon"><img src="images/icons/flag.png" alt="" class="icon"></div>
-                            <div class="stat-value" id="totalDistanceBan">0</div>
-                            <div class="stat-label">Total Distance (miles)</div>
+                            <div class="stat-card-dots">
+                                <div class="stat-icon"><img src="images/icons/flag.png" alt="" class="icon"></div>
+                                <div class="stat-value" id="totalDistanceBan">0</div>
+                                <div class="stat-label">Total Distance (miles)</div>
+                            </div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon"><img src="images/icons/streak_fire.png" alt="" class="icon"></div>
-                            <div class="stat-value" id="currentStreak">0</div>
-                            <div class="stat-label">Current Streak</div>
+                            <div class="stat-card-dots">
+                                <div class="stat-icon"><img src="images/icons/streak_fire.png" alt="" class="icon"></div>
+                                <div class="stat-value" id="currentStreak">0</div>
+                                <div class="stat-label">Current Streak</div>
+                            </div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon"><img src="images/icons/streak_long.png" alt="" class="icon"></div>
-                            <div class="stat-value" id="longestStreak">0</div>
-                            <div class="stat-label">Longest Streak</div>
+                            <div class="stat-card-dots">
+                                <div class="stat-icon"><img src="images/icons/streak_long.png" alt="" class="icon"></div>
+                                <div class="stat-value" id="longestStreak">0</div>
+                                <div class="stat-label">Longest Streak</div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -378,24 +386,21 @@
     <div id="startMenu" class="start-menu">
         <div class="start-menu-sidebar">
             <div class="start-menu-logo">
-                <span class="start-menu-text">Windows98</span>
+                <span class="start-menu-text"><b>Walker</b>98</span>
             </div>
         </div>
         <div class="start-menu-items">
             <div class="start-menu-item" data-tab="log">
                 <img src="images/icons/registration-1.png" alt="" class="start-menu-icon">
                 <span>Log Walk</span>
-                <span class="start-menu-arrow">▶</span>
             </div>
             <div class="start-menu-item" data-tab="visualizations">
                 <img src="images/icons/chart1-1.png" alt="" class="start-menu-icon">
                 <span>Charts</span>
-                <span class="start-menu-arrow">▶</span>
             </div>
             <div class="start-menu-item" data-tab="leaderboard">
                 <img src="images/icons/certificate-1.png" alt="" class="start-menu-icon">
                 <span>Leaderboard</span>
-                <span class="start-menu-arrow">▶</span>
             </div>
             <div class="start-menu-separator"></div>
             <div class="start-menu-item">
@@ -422,12 +427,11 @@
             </div>
             <div class="start-menu-separator"></div>
             <div class="start-menu-item start-menu-shutdown">
-                <img src="images/icons/no2-0.png" alt="" class="start-menu-icon">
+                <img src="images/icons/shut_down_cool-5.png" alt="" class="start-menu-icon">
                 <span>Shut Down...</span>
             </div>
         </div>
     </div>
-
 
     <div class="app-footer">
         <div class="footer-content">
